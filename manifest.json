@@ -1,0 +1,18 @@
+{
+  "name": "AXIOX Arena",
+  "short_name": "AXIOX Arena",
+  "description": "Sınavı yarışa çevir — TYT-AYT, ЕГЭ, НМТ ve Gürcistan sınavları için matematik pratiği.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#121212",
+  "theme_color": "#121212",
+  "lang": "tr",
+  "icons": [
+    { "src": "axiox_icon_192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "axiox_icon_512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "axiox_icon_192_maskable.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "axiox_icon_512_maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
