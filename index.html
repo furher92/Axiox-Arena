@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>AXIOX Arena</title>
+<meta name="description" content="AXIOX Arena — sınavı yarışa çevir. TYT-AYT, ЕГЭ, НМТ ve Gürcistan sınavları için matematik pratiği. 4 dil (TR/RU/UK/KA).">
+<meta name="theme-color" content="#121212">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="axiox_icon_192.png">
+<link rel="apple-touch-icon" href="axiox_icon_192.png">
+<meta property="og:title" content="AXIOX Arena">
+<meta property="og:description" content="Sınavı yarışa çevir.">
+<meta property="og:image" content="logo.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="logo.png">
+<style>
+  :root{
+    --bg:#121212; --surface:#1e1e1e; --surface-variant:#2a2a2a;
+    --primary:#E30A17; --primary-container:#3a0a0d;
+    --text:#f0f0f0; --text-dim:#aaaaaa;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background:var(--bg); color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    min-height:100vh; display:flex; justify-content:center;
+  }
+  #app{width:100%; max-width:480px; min-height:100vh; padding:16px; display:flex; flex-direction:column;}
+  h1{font-size:26px; font-weight:700; margin-bottom:4px;}
+  .subtitle{font-size:14px; color:var(--text-dim); margin-bottom:16px;}
+  .list{display:flex; flex-direction:column; gap:10px;}
+  .card{
+    background:var(--surface); border-radius:14px; padding:16px;
+    cursor:pointer; transition:background .15s; border:none; text-align:left;
+    width:100%; color:var(--text); font-family:inherit;
+  }
+  .card:active{background:#333;}
+  .card .ad{font-weight:700; font-size:17px;}
+  .card .sinav{font-size:13px; color:var(--text-dim); margin-top:2px;}
+  .konu-card{
+    background:var(--surface-variant); border-radius:12px; padding:14px;
+    cursor:pointer; display:flex; justify-content:space-between; align-items:center;
+    border:none; width:100%; color:var(--text); font-family:inherit; text-align:left;
+  }
+  .konu-card.aktif{background:var(--primary-container);}
+  .konu-ad{font-weight:700; font-size:14px;}
+  .zorunlu-etiket{font-size:10px; color:var(--text-dim); margin-top:2px;}
+  .emoji{font-size:16px;}
+  .geri-btn{
+    background:none; border:none; color:var(--text); font-size:15px;
+    margin-top:12px; cursor:pointer; text-align:left; padding:8px 0;
+  }
+  .quiz-wrap{
+    flex:1; display:flex; flex-direction:column; align-items:center;
+    justify-content:center; text-align:center; gap:8px;
+  }
+  .konu-baslik{font-size:18px; font-weight:700;}
+  .can{font-size:18px;}
+  .puan{font-size:12px; color:var(--text-dim);}
+  .soru{font-size:28px; font-weight:700; margin:20px 0;}
+  input[type=text]{
+    background:var(--surface); border:1px solid var(--primary);
+    color:var(--text); border-radius:10px; padding:12px; font-size:18px;
+    text-align:center; width:60%; margin-bottom:12px;
+  }
+  button.cevapla{
+    background:var(--primary); color:#fff; border:none; border-radius:10px;
+    padding:12px 28px; font-size:15px; font-weight:700; cursor:pointer;
+  }
+  button.cevapla:disabled{opacity:.4;}
+  .mesaj{font-weight:700; min-height:24px; margin-top:14px;}
+  .yakinda{font-size:48px; margin-bottom:8px;}
+  /* ── BAŞLA ekranı ── */
+  .baslangic{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;}
+  .dil-satir{display:flex; gap:8px; margin-bottom:48px;}
+  .dil-btn{background:var(--surface-variant); color:#fff; border:none; border-radius:16px; padding:6px 12px; font-size:14px; cursor:pointer; font-family:inherit;}
+  .dil-btn.secili{background:var(--primary);}
+  .monogram{font-size:96px; font-weight:900; line-height:1;}
+  .monogram .a{color:var(--primary);} .monogram .x{color:#F3ECE6;}
+  .app-adi{font-size:30px; font-weight:700; color:#F3ECE6; margin-top:8px;}
+  .slogan{font-size:14px; color:var(--text-dim); margin-top:6px;}
+  .basla-btn{background:var(--primary); color:#fff; border:none; border-radius:12px; width:60%; max-width:280px; height:52px; font-size:20px; font-weight:700; margin-top:48px; cursor:pointer; font-family:inherit;}
+  .imza{font-size:12px; color:#777; margin-top:24px;}
+  /* 🐢 Eski cihaz (Atom/netbook): geçiş efektleri kapalı */
+  body.gfx-eski *{transition:none !important; animation:none !important;}
+  @media (max-height:620px){ .dil-satir{margin-bottom:24px;} .monogram{font-size:72px;} .basla-btn{margin-top:28px;} }
+  .tekrar-btn{
+    background:var(--surface-variant); color:var(--text); border:none;
+    border-radius:10px; padding:10px 20px; font-size:20px; cursor:pointer; margin-top:12px;
+  }
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+// ═══════════════════════════════════════════════
+// AXIOX Arena — HTML5 versiyonu
+// Android/Kotlin kaynağından birebir uyarlandı:
+// LanguageManager.kt, SinavYapisi.kt, SinavSorulari.kt,
+// MainActivity.kt, SecimEkranlari.kt, SinavQuizEkrani.kt
+// ═══════════════════════════════════════════════
+
+// ---- LanguageManager.kt karşılığı ----
+const DILLER = { TR: "tr", RU: "ru", UK: "uk", KA: "ka" };
+
+function metin(tr, ru, uk, ka) {
+  return { tr, ru, uk, ka };
+}
+function al(m, dil) {
+  const secilen = m[dil];
+  if (secilen && secilen.trim() !== "") return secilen;
+  return [m.tr, m.ru, m.uk, m.ka].find(v => v && v.trim() !== "") || "";
+}
+
+const METINLER = {
+  appAdi: metin("AXIOX Arena", "AXIOX Arena", "AXIOX Arena", "AXIOX Arena"),
+  baslaBtn: metin("BAŞLA", "НАЧАТЬ", "ПОЧАТИ", "დაწყება"),
+  slogan: metin("Sınavı yarışa çevir", "Преврати экзамен в соревнование", "Перетвори іспит на змагання", "აქციე გამოცდა შეჯიბრად"),
+  ulkeSec: metin("Sınav Sistemini Seç", "Выбери Систему Экзаменов", "Вибери Систему Іспитів", "აირჩიე საგამოცდო სისტემა"),
+  konuSec: metin("Konu Seç", "Выбери Предмет", "Вибери Предмет", "აირჩიე საგანი"),
+  yakindaGeliyor: metin(
+    "🚧 Bu konu için içerik hazırlanıyor",
+    "🚧 Контент для этого предмета готовится",
+    "🚧 Контент для цього предмета готується",
+    "🚧 ამ საგნისთვის კონტენტი მზადდება"
+  ),
+  cevaplaBtn: metin("CEVAPLA", "ОТВЕТИТЬ", "ВІДПОВІСТИ", "პასუხი"),
+  dogru: metin("✅ Doğru!", "✅ Правильно!", "✅ Правильно!", "✅ სწორია!"),
+  yanlis: metin("❌ Yanlış!", "❌ Неправильно!", "❌ Неправильно!", "❌ არასწორია!"),
+  puan: metin("Puan:", "Очки:", "Очки:", "ქულა:"),
+  geri: metin("← Geri", "← Назад", "← Назад", "← უკან"),
+  zorunluEtiket: metin("Zorunlu", "Обязательно", "Обов'язково", "სავალდებულო")
+};
+
+// ---- SinavYapisi.kt karşılığı ----
+const ULKELER = [
+  { kod: "tr", gorunenAd: "Türkiye", sinavAdi: "TYT-AYT (YKS)", dil: DILLER.TR },
+  { kod: "ru", gorunenAd: "Rusya", sinavAdi: "ЕГЭ", dil: DILLER.RU },
+  { kod: "ua", gorunenAd: "Ukrayna", sinavAdi: "НМТ", dil: DILLER.UK },
+  { kod: "ge", gorunenAd: "Gürcistan", sinavAdi: "ერთიანი ეროვნული გამოცდები", dil: DILLER.KA }
+];
+
+const KONULAR = {
+  tr: [
+    { id: "tyt_matematik", ad: metin("TYT Matematik", "Математика TYT (Турция)", "Математика TYT (Туреччина)", "მათემატიკა TYT (თურქეთი)"), zorunlu: true, calisir: true },
+    { id: "tyt_turkce", ad: metin("TYT Türkçe", "", "", ""), zorunlu: true, calisir: false },
+    { id: "ayt_matematik", ad: metin("AYT Matematik (11-12. sınıf)", "", "", ""), zorunlu: false, calisir: true },
+    { id: "ayt_fizik", ad: metin("AYT Fizik (Vektörler, Elektrik-Manyetizma, Modern Fizik)", "", "", ""), zorunlu: false, calisir: false },
+    { id: "ayt_kimya", ad: metin("AYT Kimya (Atom Teorisi, Gazlar, Organik Kimya)", "", "", ""), zorunlu: false, calisir: false },
+    { id: "ayt_biyoloji", ad: metin("AYT Biyoloji (Hücresel Solunum, Genetik, Bitki Biyolojisi)", "", "", ""), zorunlu: false, calisir: false }
+  ],
+  ru: [
+    { id: "ege_matematik", ad: metin("", "Математика (база/профиль)", "", ""), zorunlu: true, calisir: true },
+    { id: "ege_rusca", ad: metin("", "Русский язык", "", ""), zorunlu: true, calisir: false },
+    { id: "ege_fizik", ad: metin("", "Физика", "", ""), zorunlu: false, calisir: false },
+    { id: "ege_kimya", ad: metin("", "Химия", "", ""), zorunlu: false, calisir: false },
+    { id: "ege_biyoloji", ad: metin("", "Биология", "", ""), zorunlu: false, calisir: false },
+    { id: "ege_tarih", ad: metin("", "История", "", ""), zorunlu: false, calisir: false }
+  ],
+  ua: [
+    { id: "nmt_matematik", ad: metin("", "", "Математика", ""), zorunlu: true, calisir: true },
+    { id: "nmt_ukraynaca", ad: metin("", "", "Українська мова", ""), zorunlu: true, calisir: false },
+    { id: "nmt_tarih", ad: metin("", "", "Історія України", ""), zorunlu: true, calisir: false },
+    { id: "nmt_fizik", ad: metin("", "", "Фізика (seçmeli)", ""), zorunlu: false, calisir: false },
+    { id: "nmt_biyoloji", ad: metin("", "", "Біологія (seçmeli)", ""), zorunlu: false, calisir: false }
+  ],
+  ge: [
+    { id: "naec_gurcuce", ad: metin("", "", "", "ქართული ენა და ლიტერატურა"), zorunlu: true, calisir: false },
+    { id: "naec_matematik", ad: metin("", "", "", "მათემატიკა"), zorunlu: false, calisir: true },
+    { id: "naec_fizik", ad: metin("", "", "", "ფიზიკა (არჩევითი)"), zorunlu: false, calisir: false },
+    { id: "naec_tarih", ad: metin("", "", "", "ისტორია (არჩევითი)"), zorunlu: false, calisir: false }
+  ]
+};
+
+// ---- SinavSorulari.kt karşılığı ----
+function r(a, b) { return Math.floor(Math.random() * (b - a + 1)) + a; }
+
+function temelMatematikSorusuUret() {
+  const a = r(2, 50), b = r(2, 50);
+  const tur = r(0, 3);
+  if (tur === 0) return { metinStr: `${a} + ${b}`, cevap: a + b };
+  if (tur === 1) return { metinStr: `${a} - ${b}`, cevap: a - b };
+  if (tur === 2) {
+    const kA = r(2, 12), kB = r(2, 12);
+    return { metinStr: `${kA} × ${kB}`, cevap: kA * kB };
+  }
+  const bolen = r(2, 12), sonuc = r(2, 12);
+  return { metinStr: `${bolen * sonuc} ÷ ${bolen}`, cevap: sonuc };
+}
+
+function ileriMatematikSorusuUret() {
+  const katsayi = r(2, 6), us = r(2, 4);
+  return { metinStr: `f(x) = ${katsayi}x^${us}  →  f'(1)`, cevap: katsayi * us };
+}
+
+function soruUret(konuId) {
+  return konuId.includes("ayt_matematik") ? ileriMatematikSorusuUret() : temelMatematikSorusuUret();
+}
+
+// ---- Uygulama durumu (MainActivity.kt karşılığı) ----
+const state = {
+  ekran: "baslangic", // baslangic | ulke_sec | konu_sec | quiz
+  aktifDil: DILLER.TR,
+  secilenUlke: null,
+  secilenKonu: null,
+  // quiz durumu
+  soru: null, girisMetni: "", mesaj: "", puan: 0, can: 4, oyunBitti: false
+};
+
+const app = document.getElementById("app");
+
+function render() {
+  if (state.ekran === "baslangic") return renderBaslangic();
+  if (state.ekran === "ulke_sec") return renderUlkeSec();
+  if (state.ekran === "konu_sec") return renderKonuSec();
+  if (state.ekran === "quiz") return renderQuiz();
+}
+
+// ---- BAŞLA ekranı (ArkTS v2 Index.ets ile aynı) ----
+const DIL_ETIKET = [["tr","TR"],["ru","RU"],["uk","UK"],["ka","KA"]];
+function renderBaslangic() {
+  const dil = state.aktifDil;
+  app.innerHTML = `
+    <div class="baslangic">
+      <div class="dil-satir">${DIL_ETIKET.map(([k,e]) =>
+        `<button class="dil-btn${k === dil ? " secili" : ""}" data-dil="${k}">${e}</button>`).join("")}</div>
+      <div class="monogram"><span class="a">A</span><span class="x">X</span></div>
+      <div class="app-adi">${al(METINLER.appAdi, dil)}</div>
+      <div class="slogan">${al(METINLER.slogan, dil)}</div>
+      <button class="basla-btn" id="baslaBtn">${al(METINLER.baslaBtn, dil)}</button>
+      <div class="imza">Catanadev</div>
+    </div>`;
+  app.querySelectorAll(".dil-btn").forEach(b => b.onclick = () => { state.aktifDil = b.dataset.dil; render(); });
+  document.getElementById("baslaBtn").onclick = () => { state.ekran = "ulke_sec"; render(); };
+}
+
+// ---- SecimEkranlari.kt: UlkeSecEkrani ----
+function renderUlkeSec() {
+  app.innerHTML = `
+    <h1>${al(METINLER.appAdi, state.aktifDil)}</h1>
+    <div class="subtitle">${al(METINLER.ulkeSec, state.aktifDil)}</div>
+    <div class="list" id="ulke-list"></div>
+  `;
+  const list = document.getElementById("ulke-list");
+  ULKELER.forEach(ulke => {
+    const btn = document.createElement("button");
+    btn.className = "card";
+    btn.innerHTML = `<div class="ad">${ulke.gorunenAd}</div><div class="sinav">${ulke.sinavAdi}</div>`;
+    btn.onclick = () => {
+      state.secilenUlke = ulke;
+      state.aktifDil = ulke.dil;
+      state.ekran = "konu_sec";
+      render();
+    };
+    list.appendChild(btn);
+  });
+  const geri = document.createElement("button");
+  geri.className = "geri-btn";
+  geri.textContent = al(METINLER.geri, state.aktifDil);
+  geri.onclick = () => { state.ekran = "baslangic"; render(); };
+  app.appendChild(geri);
+}
+
+// ---- SecimEkranlari.kt: KonuSecEkrani ----
+function renderKonuSec() {
+  const ulke = state.secilenUlke;
+  const konular = KONULAR[ulke.kod];
+  app.innerHTML = `
+    <h1 style="font-size:22px">${ulke.gorunenAd}</h1>
+    <div class="subtitle">${ulke.sinavAdi}</div>
+    <div class="list" id="konu-list"></div>
+  `;
+  const list = document.getElementById("konu-list");
+  konular.forEach(konu => {
+    const btn = document.createElement("button");
+    btn.className = "konu-card" + (konu.calisir ? " aktif" : "");
+    const zorunluHtml = konu.zorunlu
+      ? `<div class="zorunlu-etiket">${al(METINLER.zorunluEtiket, state.aktifDil)}</div>` : "";
+    btn.innerHTML = `
+      <div><div class="konu-ad">${al(konu.ad, state.aktifDil)}</div>${zorunluHtml}</div>
+      ${!konu.calisir ? '<span class="emoji">🚧</span>' : ''}
+    `;
+    btn.onclick = () => {
+      state.secilenKonu = konu;
+      state.ekran = "quiz";
+      state.soru = soruUret(konu.id);
+      state.girisMetni = ""; state.mesaj = ""; state.puan = 0; state.can = 4; state.oyunBitti = false;
+      render();
+    };
+    list.appendChild(btn);
+  });
+  const geri = document.createElement("button");
+  geri.className = "geri-btn";
+  geri.textContent = al(METINLER.geri, state.aktifDil);
+  geri.onclick = () => { state.ekran = "ulke_sec"; render(); };
+  app.appendChild(geri);
+}
+
+// ---- SinavQuizEkrani.kt ----
+function renderQuiz() {
+  const konu = state.secilenKonu;
+  const dil = state.aktifDil;
+
+  if (!konu.calisir) {
+    app.innerHTML = `
+      <div class="quiz-wrap">
+        <div class="yakinda">🚧</div>
+        <div class="konu-baslik">${al(konu.ad, dil)}</div>
+        <div class="subtitle">${al(METINLER.yakindaGeliyor, dil)}</div>
+        <button class="geri-btn" id="geri">${al(METINLER.geri, dil)}</button>
+      </div>
+    `;
+    document.getElementById("geri").onclick = () => { state.ekran = "konu_sec"; render(); };
+    return;
+  }
+
+  const canGosterim = "❤️".repeat(Math.max(state.can, 0));
+
+  app.innerHTML = `
+    <div class="quiz-wrap">
+      <div class="konu-baslik">${al(konu.ad, dil)}</div>
+      <div class="can">${canGosterim}</div>
+      <div class="puan">${al(METINLER.puan, dil)} ${state.puan}</div>
+      ${!state.oyunBitti ? `
+        <div class="soru">${state.soru.metinStr} = ?</div>
+        <input type="text" id="giris" inputmode="numeric" value="${state.girisMetni}" placeholder="?">
+        <div><button class="cevapla" id="cevaplaBtn" ${state.girisMetni.trim() === "" ? "disabled" : ""}>${al(METINLER.cevaplaBtn, dil)}</button></div>
+      ` : ""}
+      <div class="mesaj">${state.mesaj}</div>
+      ${state.oyunBitti ? `<button class="tekrar-btn" id="tekrarBtn">🔄</button>` : ""}
+      <button class="geri-btn" id="geriBtn">${al(METINLER.geri, dil)}</button>
+    </div>
+  `;
+
+  if (!state.oyunBitti) {
+    const girisEl = document.getElementById("giris");
+    girisEl.oninput = (e) => {
+      state.girisMetni = e.target.value;
+      document.getElementById("cevaplaBtn").disabled = state.girisMetni.trim() === "";
+    };
+    girisEl.onkeydown = (e) => { if (e.key === "Enter" && state.girisMetni.trim() !== "") cevapGonder(); };
+    document.getElementById("cevaplaBtn").onclick = cevapGonder;
+    girisEl.focus();
+  }
+  if (state.oyunBitti) {
+    document.getElementById("tekrarBtn").onclick = () => {
+      state.puan = 0; state.can = 4; state.oyunBitti = false;
+      state.soru = soruUret(konu.id); state.girisMetni = ""; state.mesaj = "";
+      render();
+    };
+  }
+  document.getElementById("geriBtn").onclick = () => { state.ekran = "konu_sec"; render(); };
+}
+
+function sonrakiSoru() {
+  state.soru = soruUret(state.secilenKonu.id);
+  state.girisMetni = ""; state.mesaj = "";
+}
+
+function cevapGonder() {
+  const girilen = parseFloat(state.girisMetni.replace(",", "."));
+  const dil = state.aktifDil;
+  if (isNaN(girilen)) { state.mesaj = "🤔"; render(); return; }
+
+  if (Math.abs(girilen - state.soru.cevap) < 0.001) {
+    state.mesaj = al(METINLER.dogru, dil);
+    state.puan++;
+    sonrakiSoru();
+  } else {
+    state.can--;
+    if (state.can <= 0) {
+      state.mesaj = `${al(METINLER.yanlis, dil)} (${state.soru.cevap})`;
+      state.oyunBitti = true;
+    } else {
+      state.mesaj = `${al(METINLER.yanlis, dil)} (${state.soru.cevap})`;
+      sonrakiSoru();
+    }
+  }
+  render();
+}
+
+// 🐢 Zayıf cihaz algılama (≤2 iş parçacığı veya ≤2 GB RAM) → geçiş efektlerini kapat
+try {
+  if ((navigator.hardwareConcurrency || 4) <= 2 || (navigator.deviceMemory || 4) <= 2) document.body.classList.add("gfx-eski");
+} catch (e) {}
+
+// 📲 Çevrimdışı çalışma (service worker)
+if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
+  navigator.serviceWorker.register("sw.js").catch(() => {});
+}
+
+render();
+</script>
+</body>
+</html>
