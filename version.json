@@ -1,7 +1,7 @@
 {
-  "latest": "1.1",
+  "latest": "1.2",
   "notes": {
-    "tr": "🎉 AXIOX Arena 1.1 · ▶️ Yeni BAŞLA ekranı (TR/RU/UK/KA dil seçimi) · ← Ülke seçiminden geri dönüş · 📲 Telefona uygulama gibi kurulabilir, internetsiz de açılır · 🐢 Eski cihazlarda daha akıcı · 🐞 AYT sorularındaki çift \"= ?\" düzeltildi",
-    "en": "🎉 AXIOX Arena 1.1 · ▶️ New START screen (TR/RU/UK/KA language picker) · ← Back button on country select · 📲 Installable as an app, works offline · 🐢 Smoother on old devices · 🐞 Fixed double \"= ?\" in AYT questions"
+    "tr": "🎉 AXIOX Arena 1.2 · ⚛️ Fizik ve 🧪 Kimya soruları geldi (her seferinde yeni soru üretilir) · 🧬 Biyoloji ve 📜 Tarih: çoktan seçmeli sorular · Rusya, Ukrayna ve Gürcistan için kendi tarihleri, kendi dillerinde · Tamamen çevrimdışı",
+    "en": "🎉 AXIOX Arena 1.2 · ⚛️ Physics and 🧪 Chemistry questions (freshly generated every time) · 🧬 Biology and 📜 History multiple-choice questions · Russia, Ukraine and Georgia get their own history in their own language · Fully offline"
   }
 }

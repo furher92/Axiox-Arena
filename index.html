@@ -89,6 +89,10 @@
     background:var(--surface-variant); color:var(--text); border:none;
     border-radius:10px; padding:10px 20px; font-size:20px; cursor:pointer; margin-top:12px;
   }
+.soru.uzun{font-size:17px;line-height:1.45;font-weight:600;max-width:440px;margin:18px auto;}
+.secenekler{display:grid;gap:10px;width:100%;max-width:420px;margin:0 auto 10px;box-sizing:border-box;}
+.secenek{padding:13px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#fff;font-size:15px;cursor:pointer;text-align:left;}
+.secenek:active{background:rgba(229,57,53,.35);}
 </style>
 </head>
 <body>
@@ -147,30 +151,30 @@ const KONULAR = {
     { id: "tyt_matematik", ad: metin("TYT Matematik", "Математика TYT (Турция)", "Математика TYT (Туреччина)", "მათემატიკა TYT (თურქეთი)"), zorunlu: true, calisir: true },
     { id: "tyt_turkce", ad: metin("TYT Türkçe", "", "", ""), zorunlu: true, calisir: false },
     { id: "ayt_matematik", ad: metin("AYT Matematik (11-12. sınıf)", "", "", ""), zorunlu: false, calisir: true },
-    { id: "ayt_fizik", ad: metin("AYT Fizik (Vektörler, Elektrik-Manyetizma, Modern Fizik)", "", "", ""), zorunlu: false, calisir: false },
-    { id: "ayt_kimya", ad: metin("AYT Kimya (Atom Teorisi, Gazlar, Organik Kimya)", "", "", ""), zorunlu: false, calisir: false },
-    { id: "ayt_biyoloji", ad: metin("AYT Biyoloji (Hücresel Solunum, Genetik, Bitki Biyolojisi)", "", "", ""), zorunlu: false, calisir: false }
+    { id: "ayt_fizik", ad: metin("AYT Fizik (Vektörler, Elektrik-Manyetizma, Modern Fizik)", "", "", ""), zorunlu: false, calisir: true },
+    { id: "ayt_kimya", ad: metin("AYT Kimya (Atom Teorisi, Gazlar, Organik Kimya)", "", "", ""), zorunlu: false, calisir: true },
+    { id: "ayt_biyoloji", ad: metin("AYT Biyoloji (Hücresel Solunum, Genetik, Bitki Biyolojisi)", "", "", ""), zorunlu: false, calisir: true }
   ],
   ru: [
     { id: "ege_matematik", ad: metin("", "Математика (база/профиль)", "", ""), zorunlu: true, calisir: true },
     { id: "ege_rusca", ad: metin("", "Русский язык", "", ""), zorunlu: true, calisir: false },
-    { id: "ege_fizik", ad: metin("", "Физика", "", ""), zorunlu: false, calisir: false },
-    { id: "ege_kimya", ad: metin("", "Химия", "", ""), zorunlu: false, calisir: false },
-    { id: "ege_biyoloji", ad: metin("", "Биология", "", ""), zorunlu: false, calisir: false },
-    { id: "ege_tarih", ad: metin("", "История", "", ""), zorunlu: false, calisir: false }
+    { id: "ege_fizik", ad: metin("", "Физика", "", ""), zorunlu: false, calisir: true },
+    { id: "ege_kimya", ad: metin("", "Химия", "", ""), zorunlu: false, calisir: true },
+    { id: "ege_biyoloji", ad: metin("", "Биология", "", ""), zorunlu: false, calisir: true },
+    { id: "ege_tarih", ad: metin("", "История", "", ""), zorunlu: false, calisir: true }
   ],
   ua: [
     { id: "nmt_matematik", ad: metin("", "", "Математика", ""), zorunlu: true, calisir: true },
     { id: "nmt_ukraynaca", ad: metin("", "", "Українська мова", ""), zorunlu: true, calisir: false },
-    { id: "nmt_tarih", ad: metin("", "", "Історія України", ""), zorunlu: true, calisir: false },
-    { id: "nmt_fizik", ad: metin("", "", "Фізика (seçmeli)", ""), zorunlu: false, calisir: false },
-    { id: "nmt_biyoloji", ad: metin("", "", "Біологія (seçmeli)", ""), zorunlu: false, calisir: false }
+    { id: "nmt_tarih", ad: metin("", "", "Історія України", ""), zorunlu: true, calisir: true },
+    { id: "nmt_fizik", ad: metin("", "", "Фізика (seçmeli)", ""), zorunlu: false, calisir: true },
+    { id: "nmt_biyoloji", ad: metin("", "", "Біологія (seçmeli)", ""), zorunlu: false, calisir: true }
   ],
   ge: [
     { id: "naec_gurcuce", ad: metin("", "", "", "ქართული ენა და ლიტერატურა"), zorunlu: true, calisir: false },
     { id: "naec_matematik", ad: metin("", "", "", "მათემატიკა"), zorunlu: false, calisir: true },
-    { id: "naec_fizik", ad: metin("", "", "", "ფიზიკა (არჩევითი)"), zorunlu: false, calisir: false },
-    { id: "naec_tarih", ad: metin("", "", "", "ისტორია (არჩევითი)"), zorunlu: false, calisir: false }
+    { id: "naec_fizik", ad: metin("", "", "", "ფიზიკა (არჩევითი)"), zorunlu: false, calisir: true },
+    { id: "naec_tarih", ad: metin("", "", "", "ისტორია (არჩევითი)"), zorunlu: false, calisir: true }
   ]
 };
 
@@ -196,8 +200,58 @@ function ileriMatematikSorusuUret() {
 }
 
 function soruUret(konuId) {
+  const fen = fenSoruUret(konuId, state.aktifDil);
+  if (fen) return fen;
   return konuId.includes("ayt_matematik") ? ileriMatematikSorusuUret() : temelMatematikSorusuUret();
 }
+
+// ═══════ AXIOX Arena · Fen ve Tarih soruları (çevrimdışı, cihazda üretilir) ═══════
+function karistir(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=r(0,i);[a[i],a[j]]=[a[j],a[i]];}return a;}
+function sec(a){return a[r(0,a.length-1)];}
+// ---- FİZİK (4 dil, formülle üretilir, cevap tam sayı) ----
+const FIZIK_SABLON=[
+ ()=>{const t=r(2,12),v=r(3,25),s=v*t;return {c:v,m:{tr:`Bir araç ${s} m yolu ${t} s'de sabit hızla alıyor. Hızı kaç m/s?`,ru:`Автомобиль равномерно проходит ${s} м за ${t} с. Какова его скорость (м/с)?`,uk:`Автомобіль рівномірно проходить ${s} м за ${t} с. Яка його швидкість (м/с)?`,ka:`მანქანა თანაბრად გადის ${s} მ-ს ${t} წამში. რა არის მისი სიჩქარე (მ/წმ)?`}};},
+ ()=>{const m=r(2,20),a=r(2,9);return {c:m*a,m:{tr:`Kütlesi ${m} kg olan cisme ${a} m/s² ivme kazandıran net kuvvet kaç N?`,ru:`Какая сила (Н) сообщает телу массой ${m} кг ускорение ${a} м/с²?`,uk:`Яка сила (Н) надає тілу масою ${m} кг прискорення ${a} м/с²?`,ka:`რა ძალა (ნ) ანიჭებს ${m} კგ მასის სხეულს ${a} მ/წმ² აჩქარებას?`}};},
+ ()=>{const R=r(2,20),I=r(1,6),U=R*I;return {c:I,m:{tr:`${R} Ω'luk dirence ${U} V gerilim uygulanıyor. Akım kaç A?`,ru:`На резистор ${R} Ом подано напряжение ${U} В. Какова сила тока (А)?`,uk:`На резистор ${R} Ом подано напругу ${U} В. Яка сила струму (А)?`,ka:`${R} ომიან რეზისტორზე მოდებულია ${U} ვ ძაბვა. რისი ტოლია დენის ძალა (ა)?`}};},
+ ()=>{const m=2*r(1,10),v=r(2,10);return {c:m*v*v/2,m:{tr:`Kütlesi ${m} kg olan cisim ${v} m/s hızla gidiyor. Kinetik enerjisi kaç J?`,ru:`Тело массой ${m} кг движется со скоростью ${v} м/с. Какова его кинетическая энергия (Дж)?`,uk:`Тіло масою ${m} кг рухається зі швидкістю ${v} м/с. Яка його кінетична енергія (Дж)?`,ka:`${m} კგ მასის სხეული მოძრაობს ${v} მ/წმ სიჩქარით. რისი ტოლია მისი კინეტიკური ენერგია (ჯ)?`}};},
+ ()=>{const A=r(2,10),p=r(5,50),F=A*p;return {c:p,m:{tr:`${F} N'luk kuvvet ${A} m²'lik yüzeye dik etki ediyor. Basınç kaç Pa?`,ru:`Сила ${F} Н действует перпендикулярно на площадь ${A} м². Каково давление (Па)?`,uk:`Сила ${F} Н діє перпендикулярно на площу ${A} м². Який тиск (Па)?`,ka:`${F} ნ ძალა მოქმედებს ${A} მ² ფართობზე პერპენდიკულარულად. რისი ტოლია წნევა (პა)?`}};},
+ ()=>{const t=r(2,10),P=r(5,60),W=P*t;return {c:P,m:{tr:`Bir motor ${t} s'de ${W} J iş yapıyor. Gücü kaç W?`,ru:`Двигатель за ${t} с совершает работу ${W} Дж. Какова его мощность (Вт)?`,uk:`Двигун за ${t} с виконує роботу ${W} Дж. Яка його потужність (Вт)?`,ka:`ძრავა ${t} წამში ასრულებს ${W} ჯ მუშაობას. რისი ტოლია მისი სიმძლავრე (ვტ)?`}};},
+ ()=>{const m=r(1,10),h=r(2,20);return {c:m*10*h,m:{tr:`${m} kg kütleli cisim yerden ${h} m yükseklikte. Potansiyel enerjisi kaç J? (g = 10 m/s²)`,ru:`Тело массой ${m} кг находится на высоте ${h} м. Какова его потенциальная энергия (Дж)? (g = 10 м/с²)`,uk:`Тіло масою ${m} кг перебуває на висоті ${h} м. Яка його потенціальна енергія (Дж)? (g = 10 м/с²)`,ka:`${m} კგ მასის სხეული ${h} მ სიმაღლეზეა. რისი ტოლია მისი პოტენციური ენერგია (ჯ)? (g = 10 მ/წმ²)`}};},
+ ()=>{const v0=r(0,10),a=r(1,5),t=r(2,8);return {c:v0+a*t,m:{tr:`İlk hızı ${v0} m/s olan araç ${a} m/s² ivmeyle ${t} s hızlanıyor. Son hızı kaç m/s?`,ru:`Тело с начальной скоростью ${v0} м/с разгоняется с ускорением ${a} м/с² в течение ${t} с. Какова конечная скорость (м/с)?`,uk:`Тіло з початковою швидкістю ${v0} м/с розганяється з прискоренням ${a} м/с² протягом ${t} с. Яка кінцева швидкість (м/с)?`,ka:`სხეული ${v0} მ/წმ საწყისი სიჩქარით აჩქარდება ${a} მ/წმ² აჩქარებით ${t} წამის განმავლობაში. რისი ტოლია საბოლოო სიჩქარე (მ/წმ)?`}};}
+];
+// ---- KİMYA (TR, RU; formülle üretilir) ----
+const MOL_KUTLE=[['H₂O',18],['CO₂',44],['CH₄',16],['O₂',32],['NH₃',17],['NaOH',40],['N₂',28],['HCl',36.5]];
+const ELEMENT=[['C',6,12],['N',7,14],['O',8,16],['Na',11,23],['Mg',12,24],['Al',13,27],['Cl',17,35],['Ca',20,40],['Fe',26,56],['Cu',29,64]];
+const KIMYA_SABLON=[
+ ()=>{const [f,M]=sec(MOL_KUTLE.filter(x=>Number.isInteger(x[1]))),n=r(1,6);return {c:n,m:{tr:`${M*n} g ${f} kaç moldür? (${f} = ${M} g/mol)`,ru:`Сколько моль составляют ${M*n} г ${f}? (M = ${M} г/моль)`}};},
+ ()=>{const [f,M]=sec(MOL_KUTLE.filter(x=>Number.isInteger(x[1]))),n=r(2,5);return {c:M*n,m:{tr:`${n} mol ${f} kaç gramdır? (${f} = ${M} g/mol)`,ru:`Какова масса ${n} моль ${f} (г)? (M = ${M} г/моль)`}};},
+ ()=>{const n=r(1,5);return {c:n,m:{tr:`Normal koşullarda (NK) ${(22.4*n).toFixed(1)} L gaz kaç moldür?`,ru:`Сколько моль газа содержится в ${(22.4*n).toFixed(1)} л при н. у.?`}};},
+ ()=>{const V=sec([1,2,4,5]),C=r(1,4);return {c:C,m:{tr:`${C*V} mol NaCl ile ${V} L çözelti hazırlanıyor. Molar derişim kaç M?`,ru:`В ${V} л раствора содержится ${C*V} моль NaCl. Какова молярная концентрация (моль/л)?`}};},
+ ()=>{const [s,Z,A]=sec(ELEMENT);return {c:A-Z,m:{tr:`Atom numarası ${Z}, kütle numarası ${A} olan ${s} atomunda kaç nötron vardır?`,ru:`Сколько нейтронов в атоме ${s} с порядковым номером ${Z} и массовым числом ${A}?`}};},
+ ()=>{const [s,Z]=sec(ELEMENT),q=sec([0,1,2]);const ad={tr:q?`+${q} yüklü ${s} iyonunda`:`nötr ${s} atomunda`,ru:q?`ионе ${s}${q===1?'⁺':'²⁺'}`:`нейтральном атоме ${s}`};return {c:Z-q,m:{tr:`Atom numarası ${Z} olan ${ad.tr} kaç elektron vardır?`,ru:`Сколько электронов в ${ad.ru} (порядковый номер ${Z})?`}};},
+ ()=>{const a=sec([2,3,4,5,6]);return {c:14-a,m:{tr:`pH değeri ${a} olan bir çözeltinin pOH değeri kaçtır? (25 °C)`,ru:`pH раствора равен ${a}. Чему равен pOH? (25 °C)`}};}
+];
+function sayisalUret(S,dil){const o=sec(S)();return {tam:true,metinStr:o.m[dil]||o.m.tr,cevap:o.c};}
+// ---- BİYOLOJİ (TR, RU, UK; çoktan seçmeli) ----
+// [soru, doğru, yanlış1, yanlış2, yanlış3] her dil için
+const BIYO={
+ tr:[["Hücrenin enerji (ATP) üretim merkezi hangisidir?","Mitokondri","Ribozom","Golgi cisimciği","Lizozom"],["Fotosentez bitki hücresinin hangi organelinde gerçekleşir?","Kloroplast","Mitokondri","Çekirdek","Koful"],["DNA'nın yapısında bulunmayan baz hangisidir?","Urasil","Adenin","Guanin","Sitozin"],["İnsanın vücut (somatik) hücresinde kaç kromozom bulunur?","46","23","44","48"],["Protein sentezi hangi organelde gerçekleşir?","Ribozom","Lizozom","Sentrozom","Koful"],["Kanda oksijen taşıyan protein hangisidir?","Hemoglobin","İnsülin","Keratin","Kolajen"],["Bitkilerde kökten yapraklara su taşıyan doku hangisidir?","Ksilem","Floem","Epidermis","Parankima"],["Kalıtımın temel ilkelerini bezelyelerle ortaya koyan bilim insanı kimdir?","Gregor Mendel","Charles Darwin","Louis Pasteur","Robert Hooke"],["Kan şekerini düşüren insülin hormonu hangi organdan salgılanır?","Pankreas","Karaciğer","Böbrek","Tiroit bezi"],["Fotosentezde açığa çıkan gaz hangisidir?","Oksijen","Karbondioksit","Azot","Hidrojen"],["Eşey hücreleri (gametler) hangi bölünmeyle oluşur?","Mayoz","Mitoz","Bölünerek üreme","Tomurcuklanma"],["Enzimlerin temel yapı maddesi nedir?","Protein","Karbonhidrat","Yağ","Vitamin"],["Hücre zarının temel yapısını ne oluşturur?","Fosfolipit çift tabaka","Selüloz","Kitin","Nişasta"],["İnsanda gaz alışverişi akciğerlerin hangi yapısında olur?","Alveol","Bronş","Soluk borusu","Gırtlak"],["Tek bir genin farklı biçimlerine ne ad verilir?","Alel","Kromatit","Kodon","Sentromer"]],
+ ru:[["Какой органоид является «энергетической станцией» клетки (синтез АТФ)?","Митохондрия","Рибосома","Аппарат Гольджи","Лизосома"],["В каком органоиде растительной клетки идёт фотосинтез?","Хлоропласт","Митохондрия","Ядро","Вакуоль"],["Какого азотистого основания нет в ДНК?","Урацил","Аденин","Гуанин","Цитозин"],["Сколько хромосом в соматической клетке человека?","46","23","44","48"],["Где происходит синтез белка?","Рибосома","Лизосома","Клеточный центр","Вакуоль"],["Какой белок переносит кислород в крови?","Гемоглобин","Инсулин","Кератин","Коллаген"],["Какая ткань растений проводит воду от корней к листьям?","Ксилема","Флоэма","Эпидермис","Паренхима"],["Кто открыл основные законы наследственности, работая с горохом?","Грегор Мендель","Чарльз Дарвин","Луи Пастер","Роберт Гук"],["Какой орган вырабатывает инсулин?","Поджелудочная железа","Печень","Почка","Щитовидная железа"],["Какой газ выделяется при фотосинтезе?","Кислород","Углекислый газ","Азот","Водород"],["Каким делением образуются гаметы?","Мейоз","Митоз","Почкование","Фрагментация"],["Из какого вещества в основном состоят ферменты?","Белок","Углевод","Жир","Витамин"],["Что составляет основу клеточной мембраны?","Двойной слой фосфолипидов","Целлюлоза","Хитин","Крахмал"],["Где происходит газообмен в лёгких человека?","В альвеолах","В бронхах","В трахее","В гортани"],["Как называются разные формы одного гена?","Аллели","Хроматиды","Кодоны","Центромеры"]],
+ uk:[["Яка органела є «енергетичною станцією» клітини (синтез АТФ)?","Мітохондрія","Рибосома","Апарат Гольджі","Лізосома"],["У якій органелі рослинної клітини відбувається фотосинтез?","Хлоропласт","Мітохондрія","Ядро","Вакуоля"],["Якої азотистої основи немає в ДНК?","Урацил","Аденін","Гуанін","Цитозин"],["Скільки хромосом у соматичній клітині людини?","46","23","44","48"],["Де відбувається синтез білка?","Рибосома","Лізосома","Клітинний центр","Вакуоля"],["Який білок переносить кисень у крові?","Гемоглобін","Інсулін","Кератин","Колаген"],["Яка тканина рослин проводить воду від коренів до листків?","Ксилема","Флоема","Епідерміс","Паренхіма"],["Хто відкрив основні закони спадковості, досліджуючи горох?","Грегор Мендель","Чарлз Дарвін","Луї Пастер","Роберт Гук"],["Який орган виробляє інсулін?","Підшлункова залоза","Печінка","Нирка","Щитоподібна залоза"],["Який газ виділяється під час фотосинтезу?","Кисень","Вуглекислий газ","Азот","Водень"],["Яким поділом утворюються гамети?","Мейоз","Мітоз","Брунькування","Фрагментація"],["З якої речовини переважно складаються ферменти?","Білок","Вуглевод","Жир","Вітамін"],["Що становить основу клітинної мембрани?","Подвійний шар фосфоліпідів","Целюлоза","Хітин","Крохмаль"],["Де відбувається газообмін у легенях людини?","В альвеолах","У бронхах","У трахеї","У гортані"],["Як називають різні форми одного гена?","Алелі","Хроматиди","Кодони","Центромери"]]
+};
+// ---- TARİH (her ülkenin kendi tarihi, kendi dilinde) ----
+const TARIH={
+ ru:[["В каком году произошло Крещение Руси?","988","862","1054","1147"],["В каком году состоялась Куликовская битва?","1380","1240","1480","1612"],["Кто основал Санкт-Петербург?","Пётр I","Иван IV","Екатерина II","Александр I"],["В каком году состоялось Ледовое побоище?","1242","1240","1380","1410"],["В каком году было отменено крепостное право?","1861","1812","1825","1905"],["В каком году произошло Бородинское сражение?","1812","1805","1825","1853"],["В каком году на престол был избран первый царь из династии Романовых?","1613","1598","1682","1547"],["В каком году завершилось «стояние на реке Угре»?","1480","1380","1462","1505"],["Кто первым из русских правителей официально венчался на царство (1547)?","Иван IV","Иван III","Василий III","Борис Годунов"],["Когда началась Великая Отечественная война?","22 июня 1941","1 сентября 1939","9 мая 1945","7 ноября 1917"],["В каком году Юрий Гагарин совершил первый полёт в космос?","1961","1957","1969","1965"],["В каком году прекратил существование СССР?","1991","1985","1989","1993"]],
+ uk:[["У якому році відбулося хрещення Русі?","988","882","1037","1240"],["Хто очолив Національно-визвольну війну 1648 року?","Богдан Хмельницький","Іван Мазепа","Петро Сагайдачний","Пилип Орлик"],["У якому році відбулася Переяславська рада?","1654","1648","1709","1686"],["Чия конституція 1710 року вважається однією з перших у Європі?","Пилипа Орлика","Івана Мазепи","Богдана Хмельницького","Івана Виговського"],["У якому році відбулася Полтавська битва?","1709","1654","1721","1775"],["Хто очолював Українську Центральну Раду?","Михайло Грушевський","Симон Петлюра","Павло Скоропадський","Володимир Винниченко"],["Коли було проголошено Акт Злуки УНР і ЗУНР?","22 січня 1919","24 серпня 1991","1 листопада 1918","20 листопада 1917"],["Коли Верховна Рада ухвалила Акт проголошення незалежності України?","24 серпня 1991","1 грудня 1991","16 липня 1990","28 червня 1996"],["Хто став першим Президентом України?","Леонід Кравчук","Леонід Кучма","Віктор Ющенко","Михайло Грушевський"],["У якому році сталася Чорнобильська катастрофа?","1986","1979","1991","1983"],["У якому році було ухвалено Конституцію України?","1996","1991","2004","1994"],["У яких роках стався Голодомор?","1932–1933","1921–1923","1946–1947","1918–1920"]],
+ ka:[["რომელ წელს მოხდა დიდგორის ბრძოლა?","1121","1089","1204","1184"],["რომელმა მეფემ გაიმარჯვა დიდგორის ბრძოლაში?","დავით აღმაშენებელი","თამარ მეფე","ერეკლე II","გიორგი ბრწყინვალე"],["ვინ არის „ვეფხისტყაოსნის“ ავტორი?","შოთა რუსთაველი","ილია ჭავჭავაძე","აკაკი წერეთელი","ნიკოლოზ ბარათაშვილი"],["ვინ იქადაგა ქრისტიანობა საქართველოში (IV საუკუნე)?","წმინდა ნინო","წმინდა გიორგი","ანდრია პირველწოდებული","მირიან მეფე"],["რომელ წელს გამოცხადდა საქართველოს დამოუკიდებლობა (26 მაისი)?","1918","1921","1991","1801"],["რომელ წელს აღდგა საქართველოს დამოუკიდებლობა (9 აპრილი)?","1991","1989","1918","1995"],["რომელ წელს დაიდო გეორგიევსკის ტრაქტატი?","1783","1795","1801","1762"],["რომელ წელს მოხდა კრწანისის ბრძოლა?","1795","1783","1801","1762"],["რომელ წელს გააუქმა რუსეთის იმპერიამ ქართლ-კახეთის სამეფო?","1801","1783","1795","1811"],["ვინ იყო საქართველოს პირველი პრეზიდენტი?","ზვიად გამსახურდია","ედუარდ შევარდნაძე","მიხეილ სააკაშვილი","გიორგი მარგველაშვილი"]]
+};
+function coktanUret(banka,dil,son){const B=banka[dil]||banka.tr||banka.ru;let q,i=0;do{q=sec(B);}while(son&&q[0]===son&&i++<5);return {tam:true,metinStr:q[0],secenek:karistir(q.slice(1)),cevap:q[1]};}
+function fenSoruUret(konuId,dil){
+ if(konuId.includes('fizik'))return sayisalUret(FIZIK_SABLON,dil);
+ if(konuId.includes('kimya'))return sayisalUret(KIMYA_SABLON,dil);
+ if(konuId.includes('biyoloji'))return coktanUret(BIYO,dil,state.soru&&state.soru.metinStr);
+ if(konuId.includes('tarih'))return coktanUret(TARIH,dil,state.soru&&state.soru.metinStr);
+ return null;}
 
 // ---- Uygulama durumu (MainActivity.kt karşılığı) ----
 const state = {
@@ -324,9 +378,10 @@ function renderQuiz() {
       <div class="can">${canGosterim}</div>
       <div class="puan">${al(METINLER.puan, dil)} ${state.puan}</div>
       ${!state.oyunBitti ? `
-        <div class="soru">${state.soru.metinStr} = ?</div>
-        <input type="text" id="giris" inputmode="numeric" value="${state.girisMetni}" placeholder="?">
-        <div><button class="cevapla" id="cevaplaBtn" ${state.girisMetni.trim() === "" ? "disabled" : ""}>${al(METINLER.cevaplaBtn, dil)}</button></div>
+        <div class="soru${state.soru.tam ? " uzun" : ""}">${state.soru.metinStr}${state.soru.tam ? "" : " = ?"}</div>
+        ${state.soru.secenek ? `<div class="secenekler">${state.soru.secenek.map((x, i) => `<button class="secenek" data-i="${i}">${x}</button>`).join("")}</div>` : `
+        <input type="text" id="giris" inputmode="decimal" value="${state.girisMetni}" placeholder="?">
+        <div><button class="cevapla" id="cevaplaBtn" ${state.girisMetni.trim() === "" ? "disabled" : ""}>${al(METINLER.cevaplaBtn, dil)}</button></div>`}
       ` : ""}
       <div class="mesaj">${state.mesaj}</div>
       ${state.oyunBitti ? `<button class="tekrar-btn" id="tekrarBtn">🔄</button>` : ""}
@@ -334,7 +389,9 @@ function renderQuiz() {
     </div>
   `;
 
-  if (!state.oyunBitti) {
+  if (!state.oyunBitti && state.soru.secenek) {
+    app.querySelectorAll(".secenek").forEach(b => b.onclick = () => cevapKontrol(state.soru.secenek[+b.dataset.i] === state.soru.cevap));
+  } else if (!state.oyunBitti) {
     const girisEl = document.getElementById("giris");
     girisEl.oninput = (e) => {
       state.girisMetni = e.target.value;
@@ -364,7 +421,12 @@ function cevapGonder() {
   const dil = state.aktifDil;
   if (isNaN(girilen)) { state.mesaj = "🤔"; render(); return; }
 
-  if (Math.abs(girilen - state.soru.cevap) < 0.001) {
+  cevapKontrol(Math.abs(girilen - state.soru.cevap) < 0.001);
+}
+
+function cevapKontrol(dogruMu) {
+  const dil = state.aktifDil;
+  if (dogruMu) {
     state.mesaj = al(METINLER.dogru, dil);
     state.puan++;
     sonrakiSoru();
