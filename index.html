@@ -93,9 +93,23 @@
 .secenekler{display:grid;gap:10px;width:100%;max-width:420px;margin:0 auto 10px;box-sizing:border-box;}
 .secenek{padding:13px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#fff;font-size:15px;cursor:pointer;text-align:left;}
 .secenek:active{background:rgba(229,57,53,.35);}
+
+.dil-btn{display:inline-flex;align-items:center;gap:6px;}
+.dil-btn img.bayrak{width:22px;height:15px;border-radius:2px;box-shadow:0 0 0 1px rgba(255,255,255,.25);}
+/* 🎃 Cadılar Bayramı teması */
+body.cadilar{--bg:#140b1f;--surface:#24123a;--surface-variant:#331a52;--primary:#ff7a00;--primary-container:#4a2300;background:radial-gradient(circle at 50% 0,#2a1245,#0d0716 70%) fixed;}
+body.cadilar .monogram .a{color:#ff7a00;text-shadow:0 0 18px rgba(255,122,0,.6);}
+body.cadilar .app-adi,body.cadilar h1{color:#ffd9b0;}
+#cadilarDekor{position:fixed;inset:0;pointer-events:none;z-index:0;display:none;}
+body.cadilar #cadilarDekor{display:block;}
+#cadilarDekor span{position:absolute;opacity:.18;font-size:34px;}
+#app{position:relative;z-index:1;}
+.tema-btn{position:fixed;top:10px;right:10px;z-index:5;background:var(--surface-variant);color:#fff;border:none;border-radius:16px;padding:6px 10px;font-size:16px;cursor:pointer;}
 </style>
 </head>
 <body>
+<div id="cadilarDekor"><span style="top:6%;left:6%">🎃</span><span style="top:18%;right:8%">🦇</span><span style="bottom:12%;left:10%">👻</span><span style="bottom:20%;right:12%">🎃</span><span style="top:48%;left:3%">🕸️</span></div>
+<button class="tema-btn" id="temaBtn" title="Cadılar Bayramı teması">🎃</button>
 <div id="app"></div>
 
 <script>
@@ -149,7 +163,7 @@ const ULKELER = [
 const KONULAR = {
   tr: [
     { id: "tyt_matematik", ad: metin("TYT Matematik", "Математика TYT (Турция)", "Математика TYT (Туреччина)", "მათემატიკა TYT (თურქეთი)"), zorunlu: true, calisir: true },
-    { id: "tyt_turkce", ad: metin("TYT Türkçe", "", "", ""), zorunlu: true, calisir: false },
+    { id: "tyt_turkce", ad: metin("TYT Türkçe", "", "", ""), zorunlu: true, calisir: true },
     { id: "ayt_matematik", ad: metin("AYT Matematik (11-12. sınıf)", "", "", ""), zorunlu: false, calisir: true },
     { id: "ayt_fizik", ad: metin("AYT Fizik (Vektörler, Elektrik-Manyetizma, Modern Fizik)", "", "", ""), zorunlu: false, calisir: true },
     { id: "ayt_kimya", ad: metin("AYT Kimya (Atom Teorisi, Gazlar, Organik Kimya)", "", "", ""), zorunlu: false, calisir: true },
@@ -157,7 +171,7 @@ const KONULAR = {
   ],
   ru: [
     { id: "ege_matematik", ad: metin("", "Математика (база/профиль)", "", ""), zorunlu: true, calisir: true },
-    { id: "ege_rusca", ad: metin("", "Русский язык", "", ""), zorunlu: true, calisir: false },
+    { id: "ege_rusca", ad: metin("", "Русский язык", "", ""), zorunlu: true, calisir: true },
     { id: "ege_fizik", ad: metin("", "Физика", "", ""), zorunlu: false, calisir: true },
     { id: "ege_kimya", ad: metin("", "Химия", "", ""), zorunlu: false, calisir: true },
     { id: "ege_biyoloji", ad: metin("", "Биология", "", ""), zorunlu: false, calisir: true },
@@ -165,13 +179,13 @@ const KONULAR = {
   ],
   ua: [
     { id: "nmt_matematik", ad: metin("", "", "Математика", ""), zorunlu: true, calisir: true },
-    { id: "nmt_ukraynaca", ad: metin("", "", "Українська мова", ""), zorunlu: true, calisir: false },
+    { id: "nmt_ukraynaca", ad: metin("", "", "Українська мова", ""), zorunlu: true, calisir: true },
     { id: "nmt_tarih", ad: metin("", "", "Історія України", ""), zorunlu: true, calisir: true },
     { id: "nmt_fizik", ad: metin("", "", "Фізика (seçmeli)", ""), zorunlu: false, calisir: true },
     { id: "nmt_biyoloji", ad: metin("", "", "Біологія (seçmeli)", ""), zorunlu: false, calisir: true }
   ],
   ge: [
-    { id: "naec_gurcuce", ad: metin("", "", "", "ქართული ენა და ლიტერატურა"), zorunlu: true, calisir: false },
+    { id: "naec_gurcuce", ad: metin("", "", "", "ქართული ენა და ლიტერატურა"), zorunlu: true, calisir: true },
     { id: "naec_matematik", ad: metin("", "", "", "მათემატიკა"), zorunlu: false, calisir: true },
     { id: "naec_fizik", ad: metin("", "", "", "ფიზიკა (არჩევითი)"), zorunlu: false, calisir: true },
     { id: "naec_tarih", ad: metin("", "", "", "ისტორია (არჩევითი)"), zorunlu: false, calisir: true }
@@ -239,6 +253,76 @@ const BIYO={
  ru:[["Какой органоид является «энергетической станцией» клетки (синтез АТФ)?","Митохондрия","Рибосома","Аппарат Гольджи","Лизосома"],["В каком органоиде растительной клетки идёт фотосинтез?","Хлоропласт","Митохондрия","Ядро","Вакуоль"],["Какого азотистого основания нет в ДНК?","Урацил","Аденин","Гуанин","Цитозин"],["Сколько хромосом в соматической клетке человека?","46","23","44","48"],["Где происходит синтез белка?","Рибосома","Лизосома","Клеточный центр","Вакуоль"],["Какой белок переносит кислород в крови?","Гемоглобин","Инсулин","Кератин","Коллаген"],["Какая ткань растений проводит воду от корней к листьям?","Ксилема","Флоэма","Эпидермис","Паренхима"],["Кто открыл основные законы наследственности, работая с горохом?","Грегор Мендель","Чарльз Дарвин","Луи Пастер","Роберт Гук"],["Какой орган вырабатывает инсулин?","Поджелудочная железа","Печень","Почка","Щитовидная железа"],["Какой газ выделяется при фотосинтезе?","Кислород","Углекислый газ","Азот","Водород"],["Каким делением образуются гаметы?","Мейоз","Митоз","Почкование","Фрагментация"],["Из какого вещества в основном состоят ферменты?","Белок","Углевод","Жир","Витамин"],["Что составляет основу клеточной мембраны?","Двойной слой фосфолипидов","Целлюлоза","Хитин","Крахмал"],["Где происходит газообмен в лёгких человека?","В альвеолах","В бронхах","В трахее","В гортани"],["Как называются разные формы одного гена?","Аллели","Хроматиды","Кодоны","Центромеры"]],
  uk:[["Яка органела є «енергетичною станцією» клітини (синтез АТФ)?","Мітохондрія","Рибосома","Апарат Гольджі","Лізосома"],["У якій органелі рослинної клітини відбувається фотосинтез?","Хлоропласт","Мітохондрія","Ядро","Вакуоля"],["Якої азотистої основи немає в ДНК?","Урацил","Аденін","Гуанін","Цитозин"],["Скільки хромосом у соматичній клітині людини?","46","23","44","48"],["Де відбувається синтез білка?","Рибосома","Лізосома","Клітинний центр","Вакуоля"],["Який білок переносить кисень у крові?","Гемоглобін","Інсулін","Кератин","Колаген"],["Яка тканина рослин проводить воду від коренів до листків?","Ксилема","Флоема","Епідерміс","Паренхіма"],["Хто відкрив основні закони спадковості, досліджуючи горох?","Грегор Мендель","Чарлз Дарвін","Луї Пастер","Роберт Гук"],["Який орган виробляє інсулін?","Підшлункова залоза","Печінка","Нирка","Щитоподібна залоза"],["Який газ виділяється під час фотосинтезу?","Кисень","Вуглекислий газ","Азот","Водень"],["Яким поділом утворюються гамети?","Мейоз","Мітоз","Брунькування","Фрагментація"],["З якої речовини переважно складаються ферменти?","Білок","Вуглевод","Жир","Вітамін"],["Що становить основу клітинної мембрани?","Подвійний шар фосфоліпідів","Целюлоза","Хітин","Крохмаль"],["Де відбувається газообмін у легенях людини?","В альвеолах","У бронхах","У трахеї","У гортані"],["Як називають різні форми одного гена?","Алелі","Хроматиди","Кодони","Центромери"]]
 };
+
+// ---- DİL DERSLERİ (her ülkenin kendi dili, kendi dilinde) ----
+const DIL_DERS={
+ tyt_turkce:[
+ ["\"Kitap\" sözcüğüne hangi ek getirilirse yapım eki olur?","-çı (kitapçı)","-lar (kitaplar)","-ı (kitabı)","-da (kitapta)"],
+ ["Hangisi büyük ünlü uyumuna uymaz?","kitap","kapı","defter","okul"],
+ ["\"Göz\" sözcüğü hangi cümlede mecaz anlamda kullanılmıştır?","Bu işte gözü yok.","Gözüne toz kaçtı.","Gözlerini kapattı.","Göz doktoruna gitti."],
+ ["Hangisi birleşik fiildir?","yardım etmek","koşmak","okumak","gelmek"],
+ ["\"Hızlı\" sözcüğünün zıt anlamlısı hangisidir?","yavaş","çabuk","seri","süratli"],
+ ["\"Ak\" sözcüğünün eş anlamlısı hangisidir?","beyaz","kara","kızıl","boz"],
+ ["Hangisinde ünsüz yumuşaması vardır?","ağaç → ağacı","kitap → kitaplar","yol → yolda","göz → gözlük"],
+ ["Cümlenin temel öğeleri hangileridir?","Yüklem ve özne","Nesne ve zarf tümleci","Dolaylı tümleç ve nesne","Edat ve bağlaç"],
+ ["\"Ali kitabı okudu.\" cümlesinde nesne hangisidir?","kitabı","Ali","okudu","yok"],
+ ["Hangisi bir bağlaçtır?","ve","için","gibi","kadar"],
+ ["Hangisinde \"de\" bağlacı doğru yazılmıştır?","Ben de geldim.","Bende geldim.","Oda geldi.","Sizde mi gidiyorsunuz?"],
+ ["Hangisi sıfat tamlamasıdır?","kırmızı elma","evin kapısı","okul bahçesi","kapı kolu"],
+ ["Hangisi ünlü düşmesine örnektir?","ağız → ağzı","kitap → kitabı","göz → gözü","yol → yolu"],
+ ["\"Dağ başı\" hangi tür tamlamadır?","Belirtisiz isim tamlaması","Sıfat tamlaması","Belirtili isim tamlaması","Zincirleme tamlama"],
+ ["Hangi cümlede soru eki yanlış yazılmıştır?","Gelecekmisin?","Gelecek misin?","Okudun mu?","Hazır mısın?"],
+ ["Hangisi bir zamirdir?","onlar","güzel","hızlıca","ve"]],
+ ege_rusca:[
+ ["В каком слове ударение падает на второй слог?","звонИт","тОрты","крАны","бАнты"],
+ ["Какое слово пишется через дефис?","кто-нибудь","нечто","кое как","поуму"],
+ ["Сколько падежей в русском языке?","6","5","7","8"],
+ ["Какое слово является наречием?","быстро","быстрый","быстрота","быстрить"],
+ ["Укажите синоним к слову «смелый»:","храбрый","робкий","трусливый","тихий"],
+ ["Укажите антоним к слову «горячий»:","холодный","тёплый","жаркий","пылкий"],
+ ["Какое слово пишется с Ь на конце?","ночь","мяч","врач","грач"],
+ ["Какая часть речи слово «бегущий»?","причастие","деепричастие","наречие","глагол"],
+ ["Какая часть речи слово «прочитав»?","деепричастие","причастие","наречие","прилагательное"],
+ ["В каком слове пишется НЕ слитно?","невежда","не был","не правда","не годовать"],
+ ["Какой союз является сочинительным?","и","потому что","если","чтобы"],
+ ["Как называется главный член предложения, отвечающий на вопрос «кто? что?»","подлежащее","сказуемое","дополнение","обстоятельство"],
+ ["Сколько букв в русском алфавите?","33","32","31","34"],
+ ["Какое слово с приставкой ПРИ-?","пришёл","преемник","прелестный","превратить"],
+ ["Кто автор романа «Война и мир»?","Л. Н. Толстой","Ф. М. Достоевский","А. С. Пушкин","И. С. Тургенев"],
+ ["В каком слове пишется Ё после шипящего?","шёпот","шоколад","капюшон","обжора"]],
+ nmt_ukraynaca:[
+ ["Скільки літер в українському алфавіті?","33","32","31","34"],
+ ["Яка літера є тільки в українському алфавіті (порівняно з російським)?","ї","ы","э","ъ"],
+ ["Яке слово пишеться з апострофом?","м'ята","свято","дзвін","цвях"],
+ ["Укажіть синонім до слова «відважний»:","сміливий","боязкий","лагідний","тихий"],
+ ["Укажіть антонім до слова «високий»:","низький","довгий","великий","широкий"],
+ ["Скільки відмінків в українській мові?","7","6","5","8"],
+ ["Як називається сьомий відмінок?","кличний","орудний","місцевий","давальний"],
+ ["Яка частина мови слово «швидко»?","прислівник","прикметник","дієслово","іменник"],
+ ["Яка частина мови слово «прочитавши»?","дієприслівник","дієприкметник","прислівник","дієслово"],
+ ["У якому слові відбувається чергування г–з?","нога → нозі","мама → мамі","вода → воді","зима → зимі"],
+ ["Хто автор «Кобзаря»?","Тарас Шевченко","Іван Франко","Леся Українка","Григорій Сковорода"],
+ ["Хто автор драми-феєрії «Лісова пісня»?","Леся Українка","Іван Франко","Ольга Кобилянська","Марко Вовчок"],
+ ["Який сполучник є сурядним?","і","бо","щоб","якщо"],
+ ["Головний член речення, що відповідає на питання «хто? що?»:","підмет","присудок","додаток","обставина"],
+ ["Яке слово пишеться разом?","напам'ять","на-пам'ять","на завжди","по перше"]],
+ naec_gurcuce:[
+ ["რამდენი ასოა თანამედროვე ქართულ ანბანში?","33","32","35","38"],
+ ["რა ჰქვია თანამედროვე ქართულ დამწერლობას?","მხედრული","ასომთავრული","ნუსხური","კირილიცა"],
+ ["ვინ არის „ვეფხისტყაოსნის“ ავტორი?","შოთა რუსთაველი","ილია ჭავჭავაძე","აკაკი წერეთელი","ვაჟა-ფშაველა"],
+ ["ვინ დაწერა „კაცია-ადამიანი?!“?","ილია ჭავჭავაძე","აკაკი წერეთელი","ვაჟა-ფშაველა","გალაკტიონ ტაბიძე"],
+ ["ვინ არის „ალუდა ქეთელაურის“ ავტორი?","ვაჟა-ფშაველა","ილია ჭავჭავაძე","შოთა რუსთაველი","ნიკოლოზ ბარათაშვილი"],
+ ["ვინ დაწერა ლექსი „მერანი“?","ნიკოლოზ ბარათაშვილი","აკაკი წერეთელი","გალაკტიონ ტაბიძე","ვაჟა-ფშაველა"],
+ ["„სულიკოს“ ტექსტის ავტორი ვინ არის?","აკაკი წერეთელი","ილია ჭავჭავაძე","შოთა რუსთაველი","ვაჟა-ფშაველა"],
+ ["რომელია ქართული ანბანის პირველი ასო?","ა","ბ","გ","დ"],
+ ["რომელი სიტყვაა არსებითი სახელი?","სახლი","ლამაზი","სწრაფად","წერს"],
+ ["რომელი სიტყვაა ზმნა?","წერს","წიგნი","კარგი","ძალიან"],
+ ["„დიდი“ სიტყვის საპირისპირო:","პატარა","მაღალი","გრძელი","ფართო"],
+ ["„ლამაზი“ სიტყვის სინონიმი:","მშვენიერი","მახინჯი","ცუდი","ძველი"],
+ ["რამდენი ბრუნვაა ქართულ ენაში (ტრადიციულად)?","7","6","5","8"],
+ ["ვინ დაწერა „მთვარის მოტაცება“?","კონსტანტინე გამსახურდია","ილია ჭავჭავაძე","ოთარ ჭილაძე","ნოდარ დუმბაძე"],
+ ["ვინ არის „მე, ბებია, ილიკო და ილარიონის“ ავტორი?","ნოდარ დუმბაძე","ოთარ ჭილაძე","ჭაბუა ამირეჯიბი","მიხეილ ჯავახიშვილი"]]
+};
 // ---- TARİH (her ülkenin kendi tarihi, kendi dilinde) ----
 const TARIH={
  ru:[["В каком году произошло Крещение Руси?","988","862","1054","1147"],["В каком году состоялась Куликовская битва?","1380","1240","1480","1612"],["Кто основал Санкт-Петербург?","Пётр I","Иван IV","Екатерина II","Александр I"],["В каком году состоялось Ледовое побоище?","1242","1240","1380","1410"],["В каком году было отменено крепостное право?","1861","1812","1825","1905"],["В каком году произошло Бородинское сражение?","1812","1805","1825","1853"],["В каком году на престол был избран первый царь из династии Романовых?","1613","1598","1682","1547"],["В каком году завершилось «стояние на реке Угре»?","1480","1380","1462","1505"],["Кто первым из русских правителей официально венчался на царство (1547)?","Иван IV","Иван III","Василий III","Борис Годунов"],["Когда началась Великая Отечественная война?","22 июня 1941","1 сентября 1939","9 мая 1945","7 ноября 1917"],["В каком году Юрий Гагарин совершил первый полёт в космос?","1961","1957","1969","1965"],["В каком году прекратил существование СССР?","1991","1985","1989","1993"]],
@@ -247,6 +331,7 @@ const TARIH={
 };
 function coktanUret(banka,dil,son){const B=banka[dil]||banka.tr||banka.ru;let q,i=0;do{q=sec(B);}while(son&&q[0]===son&&i++<5);return {tam:true,metinStr:q[0],secenek:karistir(q.slice(1)),cevap:q[1]};}
 function fenSoruUret(konuId,dil){
+ if(DIL_DERS[konuId])return coktanUret({x:DIL_DERS[konuId]},'x',state.soru&&state.soru.metinStr);
  if(konuId.includes('fizik'))return sayisalUret(FIZIK_SABLON,dil);
  if(konuId.includes('kimya'))return sayisalUret(KIMYA_SABLON,dil);
  if(konuId.includes('biyoloji'))return coktanUret(BIYO,dil,state.soru&&state.soru.metinStr);
@@ -273,13 +358,20 @@ function render() {
 }
 
 // ---- BAŞLA ekranı (ArkTS v2 Index.ets ile aynı) ----
-const DIL_ETIKET = [["tr","TR"],["ru","RU"],["uk","UK"],["ka","KA"]];
+
+const BAYRAK={
+ tr:"data:image/svg+xml,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 20"><rect width="30" height="20" fill="#E30A17"/><circle cx="11" cy="10" r="5" fill="#fff"/><circle cx="12.3" cy="10" r="4" fill="#E30A17"/><polygon fill="#fff" points="17,10 19.9,9.1 18.1,11.5 18.1,8.5 19.9,10.9"/></svg>'),
+ ru:"data:image/svg+xml,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 20"><rect width="30" height="20" fill="#fff"/><rect y="6.67" width="30" height="6.67" fill="#0039A6"/><rect y="13.33" width="30" height="6.67" fill="#D52B1E"/></svg>'),
+ uk:"data:image/svg+xml,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 20"><rect width="30" height="10" fill="#0057B7"/><rect y="10" width="30" height="10" fill="#FFD700"/></svg>'),
+ ka:"data:image/svg+xml,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 20"><rect width="30" height="20" fill="#fff"/><rect x="13" width="4" height="20" fill="#E30A17"/><rect y="8" width="30" height="4" fill="#E30A17"/><g fill="#E30A17"><rect x="5.3" y="2.5" width="1.4" height="4"/><rect x="4" y="3.8" width="4" height="1.4"/><rect x="23.3" y="2.5" width="1.4" height="4"/><rect x="22" y="3.8" width="4" height="1.4"/><rect x="5.3" y="13.5" width="1.4" height="4"/><rect x="4" y="14.8" width="4" height="1.4"/><rect x="23.3" y="13.5" width="1.4" height="4"/><rect x="22" y="14.8" width="4" height="1.4"/></g></svg>')
+};
+const DIL_ETIKET = [["tr","TR"],["ru","RU"],["uk","UA"],["ka","GE"]];
 function renderBaslangic() {
   const dil = state.aktifDil;
   app.innerHTML = `
     <div class="baslangic">
       <div class="dil-satir">${DIL_ETIKET.map(([k,e]) =>
-        `<button class="dil-btn${k === dil ? " secili" : ""}" data-dil="${k}">${e}</button>`).join("")}</div>
+        `<button class="dil-btn${k === dil ? " secili" : ""}" data-dil="${k}"><img class="bayrak" src="${BAYRAK[k]}" alt=""> ${e}</button>`).join("")}</div>
       <div class="monogram"><span class="a">A</span><span class="x">X</span></div>
       <div class="app-adi">${al(METINLER.appAdi, dil)}</div>
       <div class="slogan">${al(METINLER.slogan, dil)}</div>
@@ -454,6 +546,35 @@ if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
 }
 
 render();
+
+// 🎃 Cadılar Bayramı teması (elle aç/kapat; 20 Eki–15 Kas arası varsayılan açık)
+(function(){var b=document.getElementById('temaBtn');function oku(){try{return localStorage.getItem('ax_cadilar');}catch(e){return null;}}
+function yaz(v){try{localStorage.setItem('ax_cadilar',v);}catch(e){}}
+var d=new Date(),m=d.getMonth(),g=d.getDate();var mevsim=(m===9&&g>=20)||(m===10&&g<=15);
+var v=oku();var acik=v===null?mevsim:v==='1';
+function uygula(){document.body.classList.toggle('cadilar',acik);b.textContent=acik?'🎃':'🌑';}
+b.onclick=function(){acik=!acik;yaz(acik?'1':'0');uygula();};uygula();})();
+</script>
+<script>
+/* 🐞 Catanadev mini hata bildirme sistemi: hataları kendiliğinden toplar, oyuncu tek tuşla rapor gönderir (e-posta / kopyala / indir) */
+(function(){var OYUN=document.title||'Catanadev',MAIL='furkan8101@outlook.com',L=[];
+function ekle(t){try{L.push(new Date().toISOString().slice(11,19)+' '+String(t).slice(0,300));if(L.length>25)L.shift();}catch(e){}}
+window.addEventListener('error',function(e){ekle((e.message||'hata')+' @'+(e.filename||'').split('/').pop()+':'+(e.lineno||0));});
+window.addEventListener('unhandledrejection',function(e){ekle('Promise: '+((e.reason&&e.reason.message)||e.reason));});
+function rapor(not){return '🐞 '+OYUN+' HATA RAPORU\nTarih: '+new Date().toLocaleString('tr-TR')+'\nSayfa: '+location.href.split('?')[0]+'\nCihaz: '+navigator.userAgent+'\nEkran: '+innerWidth+'x'+innerHeight+(matchMedia('(pointer:coarse)').matches?' (dokunmatik)':'')+'\n\nOyuncunun notu:\n'+(not||'-')+'\n\nOtomatik yakalanan hatalar ('+L.length+'):\n'+(L.join('\n')||'yok');}
+function ac(){var o=document.getElementById('cdBug');if(o){o.remove();return;}o=document.createElement('div');o.id='cdBug';
+ o.style.cssText='position:fixed;inset:0;z-index:2147483646;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;font-family:sans-serif';
+ o.innerHTML='<div style="background:#141a2e;color:#fff;border:2px solid #ff5a5a;border-radius:12px;padding:14px;width:min(92vw,420px)"><div style="font-weight:700;font-size:16px;margin-bottom:6px">🐞 Hata Bildir</div><div style="font-size:12px;opacity:.8;margin-bottom:8px">Ne oldu? Nerede, ne yaparken? (Otomatik yakalanan '+L.length+' hata rapora eklenir)</div><textarea id="cdBugT" rows="5" style="width:100%;box-sizing:border-box;border-radius:8px;border:1px solid #445;background:#0b1020;color:#fff;padding:8px;font-size:13px"></textarea><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px"><button data-b="m" style="flex:1;padding:9px;border:0;border-radius:8px;background:#e53935;color:#fff;font-weight:700">📧 E-posta</button><button data-b="k" style="flex:1;padding:9px;border:0;border-radius:8px;background:#1f6fb2;color:#fff;font-weight:700">📋 Kopyala</button><button data-b="i" style="flex:1;padding:9px;border:0;border-radius:8px;background:#2e7d32;color:#fff;font-weight:700">💾 İndir</button><button data-b="x" style="padding:9px 12px;border:0;border-radius:8px;background:#444;color:#fff">✕</button></div><div id="cdBugD" style="font-size:11px;margin-top:6px;opacity:.85"></div></div>';
+ document.body.appendChild(o);o.onclick=function(e){if(e.target===o)o.remove();var b=e.target.getAttribute&&e.target.getAttribute('data-b');if(!b)return;var r=rapor(document.getElementById('cdBugT').value),d=document.getElementById('cdBugD');
+  if(b==='x')o.remove();
+  if(b==='m')location.href='mailto:'+MAIL+'?subject='+encodeURIComponent('🐞 '+OYUN+' hata raporu')+'&body='+encodeURIComponent(r.slice(0,1800));
+  if(b==='k'){try{navigator.clipboard.writeText(r).then(function(){d.textContent='✅ Kopyalandı, istediğin yere yapıştır.';},function(){d.textContent='Kopyalanamadı, İndir\'i dene.';});}catch(_){d.textContent='Kopyalanamadı, İndir\'i dene.';}}
+  if(b==='i'){var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([r],{type:'text/plain'}));a.download='HataRaporu_'+OYUN.replace(/\W+/g,'')+'.txt';document.body.appendChild(a);a.click();setTimeout(function(){a.remove();},500);d.textContent='✅ Rapor indirildi.';}};}
+ var btn=document.createElement('button');btn.id='cdBugBtn';btn.textContent='🐞';btn.title='Hata bildir';btn.onclick=ac;
+ btn.style.cssText='position:fixed;right:6px;bottom:6px;z-index:2147483645;width:30px;height:30px;border-radius:50%;border:1px solid rgba(255,255,255,.35);background:rgba(20,26,46,.7);color:#fff;font-size:15px;line-height:28px;padding:0;cursor:pointer;opacity:.55';
+ btn.onmouseenter=function(){btn.style.opacity='1';};btn.onmouseleave=function(){btn.style.opacity='.55';};
+ function koy(){if(!document.getElementById('cdBugBtn'))document.body.appendChild(btn);}setInterval(function(){var g=document.getElementById('oyun');btn.style.display=(g&&g.style.display!=='none'&&getComputedStyle(g).display!=='none')?'none':'';},700);if(document.body)koy();else document.addEventListener('DOMContentLoaded',koy);
+ window.hataBildir=ac;})();
 </script>
 </body>
 </html>
