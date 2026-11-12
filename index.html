@@ -555,7 +555,7 @@ const sesYanlis=()=>{ton(220,0,0.18,"sawtooth",0.08);ton(165,0.12,0.25,"sawtooth
 const sesBitti=()=>{[523,659,784,1047].forEach((f,i)=>ton(f,i*0.12,0.25,"triangle",0.12));};
 document.addEventListener("click",e=>{if(e.target.closest("button")&&!e.target.closest("#sesBtn"))sesTik();},true);
 (function(){const b=document.createElement("button");b.id="sesBtn";b.title="Ses";b.style.cssText="position:fixed;left:10px;bottom:10px;z-index:9999;width:42px;height:42px;border-radius:50%;border:2px solid #e10a17;background:#141414;color:#fff;font-size:18px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.5)";
- const yaz=()=>{b.textContent=SES.acik?"🔊":"🔇";};yaz();b.onclick=()=>{SES.acik=!SES.acik;if(!SES.acik)axMuzikDur();else if(state.ekran==="quiz"&&!state.oyunBitti)axMuzikBasla();try{localStorage.setItem("ax_ses",SES.acik?"1":"0");}catch(e){}yaz();if(SES.acik)sesDogru();};document.body.appendChild(b);})();
+ const yaz=()=>{b.textContent=SES.acik?"🔊":"🔇";};yaz();b.onclick=()=>{SES.acik=!SES.acik;if(!SES.acik)axMuzikDur();else axMuzikBasla();try{localStorage.setItem("ax_ses",SES.acik?"1":"0");}catch(e){}yaz();if(SES.acik)sesDogru();};document.body.appendChild(b);})();
 const AX_MUZIK = [
     // Parça 1: Kristal/buz temalı arpej (❄️ kış)
     {
@@ -598,12 +598,13 @@ const AX_SURE=20;const AXS={kalan:AX_SURE,soru:null,iv:null};
 function axSureDur(){clearInterval(AXS.iv);AXS.iv=null;AXS.soru=null;}
 function axSureYaz(){const e=document.getElementById('axSure');if(e){e.textContent='⏱️ '+AXS.kalan;e.classList.toggle('az',AXS.kalan<=5);}}
 function axSureKontrol(){const q=state.ekran==='quiz'&&state.secilenKonu&&state.secilenKonu.calisir&&!state.oyunBitti;
- if(!q){axSureDur();if(state.ekran!=='quiz'||state.oyunBitti)axMuzikDur();return;}
  axMuzikBasla();
+ if(!q){axSureDur();return;}
  if(AXS.soru!==state.soru){AXS.soru=state.soru;AXS.kalan=AX_SURE;clearInterval(AXS.iv);AXS.iv=setInterval(()=>{AXS.kalan--;axSureYaz();if(AXS.kalan<=0){axSureDur();const c=state.soru.cevap;cevapKontrol(false);state.mesaj='⏰ '+({tr:'Süre doldu!',ru:'Время вышло!',uk:'Час вийшов!',ka:'დრო ამოიწურა!'}[state.aktifDil]||'Süre doldu!')+' ('+c+')';render();}},1000);}
  axSureYaz();}
 const _axRender=render;render=function(){_axRender();try{axSureKontrol();}catch(e){}};
-document.addEventListener('visibilitychange',()=>{if(document.hidden)axMuzikDur();else if(state.ekran==='quiz'&&!state.oyunBitti)axMuzikBasla();});
+document.addEventListener('visibilitychange',()=>{if(document.hidden)axMuzikDur();else axMuzikBasla();});
+document.addEventListener('pointerdown',()=>{if(SES.acik&&!AXM.acik)axMuzikBasla();},{passive:true});
 
 render();
 
