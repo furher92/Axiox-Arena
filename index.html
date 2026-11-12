@@ -466,7 +466,7 @@ function renderQuiz() {
 
   app.innerHTML = `
     <div class="quiz-wrap">
-      <div class="qUst"><div class="konu-baslik">${al(konu.ad, dil)}</div><div class="qBil"><div class="can">${canGosterim}</div><div class="puan">⭐ ${al(METINLER.puan, dil)} ${state.puan}</div></div></div>
+      <div class="qUst"><div class="konu-baslik">${al(konu.ad, dil)}</div><div class="qBil"><div class="sure" id="axSure">⏱️ 20</div><div class="can">${canGosterim}</div><div class="puan">⭐ ${al(METINLER.puan, dil)} ${state.puan}</div></div></div>
       ${!state.oyunBitti ? `
         <div class="soru${state.soru.tam ? " uzun" : ""}">${state.soru.metinStr}${state.soru.tam ? "" : " = ?"}</div>
         ${state.soru.secenek ? `<div class="secenekler">${state.soru.secenek.map((x, i) => `<button class="secenek" data-i="${i}">${x}</button>`).join("")}</div>` : `
@@ -555,7 +555,55 @@ const sesYanlis=()=>{ton(220,0,0.18,"sawtooth",0.08);ton(165,0.12,0.25,"sawtooth
 const sesBitti=()=>{[523,659,784,1047].forEach((f,i)=>ton(f,i*0.12,0.25,"triangle",0.12));};
 document.addEventListener("click",e=>{if(e.target.closest("button")&&!e.target.closest("#sesBtn"))sesTik();},true);
 (function(){const b=document.createElement("button");b.id="sesBtn";b.title="Ses";b.style.cssText="position:fixed;left:10px;bottom:10px;z-index:9999;width:42px;height:42px;border-radius:50%;border:2px solid #e10a17;background:#141414;color:#fff;font-size:18px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.5)";
- const yaz=()=>{b.textContent=SES.acik?"🔊":"🔇";};yaz();b.onclick=()=>{SES.acik=!SES.acik;try{localStorage.setItem("ax_ses",SES.acik?"1":"0");}catch(e){}yaz();if(SES.acik)sesDogru();};document.body.appendChild(b);})();
+ const yaz=()=>{b.textContent=SES.acik?"🔊":"🔇";};yaz();b.onclick=()=>{SES.acik=!SES.acik;if(!SES.acik)axMuzikDur();else if(state.ekran==="quiz"&&!state.oyunBitti)axMuzikBasla();try{localStorage.setItem("ax_ses",SES.acik?"1":"0");}catch(e){}yaz();if(SES.acik)sesDogru();};document.body.appendChild(b);})();
+const AX_MUZIK = [
+    // Parça 1: Kristal/buz temalı arpej (❄️ kış)
+    {
+        name: 'Frost Waltz',
+        notes: [261,329,392,523,659,523,392,329, 293,369,440,587,740,587,440,369,
+                220,277,349,440,554,440,349,277, 196,247,311,392,494,392,311,247],
+        tempo: 0.15, type: 'triangle', gain: 0.06
+    },
+    // Parça 2: Buz çıngırakları — yumuşak, parlak (eski square yerine sine/triangle)
+    {
+        name: 'Snowfall Chime',
+        notes: [440,494,523,587,659,587,523,494, 392,440,494,523,587,523,494,440,
+                349,392,440,494,523,494,440,392, 330,370,415,440,494,440,415,370],
+        tempo: 0.13, type: 'triangle', gain: 0.045
+    },
+    // Parça 3: Derin buz bası — sine ile daha saf/soğuk ton
+    {
+        name: 'Glacier Groove',
+        notes: [130,164,196,261,196,164,130,164, 146,184,220,293,220,184,146,184,
+                110,138,164,220,164,138,110,138, 123,155,185,247,185,155,123,155],
+        tempo: 0.18, type: 'sine', gain: 0.055
+    },
+    // Parça 4: Gizemli kar fırtınası (minör)
+    {
+        name: 'Winter Algebra',
+        notes: [220,261,311,369,440,369,311,261, 196,233,277,330,392,330,277,233,
+                174,207,247,294,349,294,247,207, 155,185,220,261,311,261,220,185],
+        tempo: 0.16, type: 'sine', gain: 0.07
+    },
+];
+// 🎵 Sayı Avcısı müzikleri (aynı parçalar) — sadece soru ekranında çalar
+const AXM={acik:false,ctx:null,nod:[],tm:null};
+function axMuzikDur(){AXM.acik=false;clearTimeout(AXM.tm);AXM.nod.forEach(n=>{try{n.stop&&n.stop();n.disconnect&&n.disconnect();}catch(e){}});AXM.nod=[];if(AXM.ctx){try{AXM.ctx.close();}catch(e){}AXM.ctx=null;}}
+function axParca(){if(!AXM.acik||!AXM.ctx)return;const tr=AX_MUZIK[Math.floor(Math.random()*AX_MUZIK.length)],c=AXM.ctx;let t=c.currentTime+.05;const mg=c.createGain();mg.gain.value=tr.gain*.8;mg.connect(c.destination);AXM.nod.push(mg);
+ tr.notes.forEach((f,i)=>{const o=c.createOscillator(),g=c.createGain();o.type=tr.type;o.frequency.value=f;g.gain.setValueAtTime(0,t+i*tr.tempo);g.gain.linearRampToValueAtTime(1,t+i*tr.tempo+.02);g.gain.exponentialRampToValueAtTime(.001,t+i*tr.tempo+tr.tempo*.9);o.connect(g);g.connect(mg);o.start(t+i*tr.tempo);o.stop(t+i*tr.tempo+tr.tempo);AXM.nod.push(o);});
+ AXM.tm=setTimeout(()=>{AXM.nod=AXM.nod.slice(-1);axParca();},tr.notes.length*tr.tempo*1000+100);}
+function axMuzikBasla(){if(AXM.acik||!SES.acik)return;try{AXM.ctx=new (window.AudioContext||window.webkitAudioContext)();AXM.acik=true;axParca();}catch(e){}}
+// ⏱️ Soru başına geri sayım: soru ekrana gelince hemen başlar, cevap beklemez
+const AX_SURE=20;const AXS={kalan:AX_SURE,soru:null,iv:null};
+function axSureDur(){clearInterval(AXS.iv);AXS.iv=null;AXS.soru=null;}
+function axSureYaz(){const e=document.getElementById('axSure');if(e){e.textContent='⏱️ '+AXS.kalan;e.classList.toggle('az',AXS.kalan<=5);}}
+function axSureKontrol(){const q=state.ekran==='quiz'&&state.secilenKonu&&state.secilenKonu.calisir&&!state.oyunBitti;
+ if(!q){axSureDur();if(state.ekran!=='quiz'||state.oyunBitti)axMuzikDur();return;}
+ axMuzikBasla();
+ if(AXS.soru!==state.soru){AXS.soru=state.soru;AXS.kalan=AX_SURE;clearInterval(AXS.iv);AXS.iv=setInterval(()=>{AXS.kalan--;axSureYaz();if(AXS.kalan<=0){axSureDur();const c=state.soru.cevap;cevapKontrol(false);state.mesaj='⏰ '+({tr:'Süre doldu!',ru:'Время вышло!',uk:'Час вийшов!',ka:'დრო ამოიწურა!'}[state.aktifDil]||'Süre doldu!')+' ('+c+')';render();}},1000);}
+ axSureYaz();}
+const _axRender=render;render=function(){_axRender();try{axSureKontrol();}catch(e){}};
+document.addEventListener('visibilitychange',()=>{if(document.hidden)axMuzikDur();else if(state.ekran==='quiz'&&!state.oyunBitti)axMuzikBasla();});
 
 render();
 
@@ -617,6 +665,7 @@ body{background:radial-gradient(ellipse at 50% -10%,#3a0a10 0%,#120a0e 45%,#0707
 #app .secenekler{display:grid!important;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
 #app .secenek{padding:16px 12px!important;font-size:16px!important;font-weight:700;border-radius:14px!important;border:2px solid rgba(255,255,255,.15)!important;background:rgba(255,255,255,.07)!important;color:#fff!important;box-shadow:0 4px 0 rgba(0,0,0,.45);transition:transform .1s}
 #app .secenek:hover{border-color:rgba(225,10,23,.7)!important;transform:translateY(-2px)}
+#app .sure{background:rgba(225,10,23,.18);border:1px solid rgba(225,10,23,.6);padding:5px 12px;border-radius:20px;font-weight:900;min-width:64px;text-align:center}#app .sure.az{background:#e10a17;color:#fff;animation:axNab .5s infinite alternate}@keyframes axNab{to{transform:scale(1.12)}}
 #app .mesaj{min-height:26px;margin-top:12px;font-weight:800;font-size:16px}
 #app .tekrar-btn{font-size:26px;padding:10px 24px;border-radius:16px}
 @media(max-width:560px){#app .secenekler{grid-template-columns:1fr}#app .list{grid-template-columns:1fr}}

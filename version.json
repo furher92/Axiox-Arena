@@ -1,7 +1,7 @@
 {
-  "latest": "1.3",
+  "latest": "1.3.1",
   "notes": {
-    "tr": "🎨 AXIOX Arena 1.3 · Yeni arayüz: kartlı sınav/konu seçimi (ders simgeleri), büyük soru paneli, şık şıklar · ☰ Oyun içi menü: Ana Menü, Sınav seç, Ses, Hakkında & Lisans · 🔊 Ses efektleri · 🎨 Yeni ikon",
+    "tr": "⏱️ AXIOX Arena 1.3.1 · Her soruda 20 sn geri sayım (soru gelince başlar, son 5 sn kırmızı) · 🎵 Sayı Avcısı müzikleri soru ekranında çalıyor (🔊 ile kapanır) · 🎨 AXIOX Arena 1.3 · Yeni arayüz: kartlı sınav/konu seçimi (ders simgeleri), büyük soru paneli, şık şıklar · ☰ Oyun içi menü: Ana Menü, Sınav seç, Ses, Hakkında & Lisans · 🔊 Ses efektleri · 🎨 Yeni ikon",
     "en": "🎨 AXIOX Arena 1.3 · New UI: card-based exam/subject pick, big question panel · ☰ In-game menu with About & License · 🔊 Sound effects · 🎨 New icon"
   }
 }
