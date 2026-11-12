@@ -1,7 +1,7 @@
 {
-  "latest": "1.2",
+  "latest": "1.2.1",
   "notes": {
-    "tr": "🎉 AXIOX Arena 1.2 · 📚 Dil dersleri açıldı: TYT Türkçe, Rus Dili (ЕГЭ), Ukrayna Dili (НМТ), Gürcü Dili · 🏳️ Dil butonlarında ülke bayrakları · 🎃 Cadılar Bayramı teması (sağ üstten aç/kapat) · 🐞 Hata bildir butonu",
-    "en": "🎉 AXIOX Arena 1.2 · 📚 Language subjects unlocked: Turkish (TYT), Russian (EGE), Ukrainian (NMT), Georgian · 🏳️ Country flags on language buttons · 🎃 Halloween theme (toggle top-right)"
+    "tr": "🔊 AXIOX Arena 1.2.1 · Sesler geldi: doğru/yanlış/oyun sonu ve düğme sesleri (sol alttaki 🔊 ile aç/kapat) · 🎨 Yeni uygulama ikonu",
+    "en": "🔊 AXIOX Arena 1.2.1 · Sound effects: correct/wrong/game over and button clicks (toggle with 🔊 bottom-left) · 🎨 New app icon"
   }
 }

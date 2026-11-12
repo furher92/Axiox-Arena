@@ -1,5 +1,5 @@
 // AXIOX Arena Service Worker — Network-first: önce internetten taze dosya, yoksa önbellek
-const CACHE_NAME = 'axiox-cache-v1-3';
+const CACHE_NAME = 'axiox-cache-v1-4';
 
 self.addEventListener('install', function(e) { self.skipWaiting(); });
 

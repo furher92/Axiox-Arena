@@ -518,6 +518,7 @@ function cevapGonder() {
 
 function cevapKontrol(dogruMu) {
   const dil = state.aktifDil;
+  try{dogruMu?sesDogru():(state.can<=1?sesBitti():sesYanlis());}catch(e){}
   if (dogruMu) {
     state.mesaj = al(METINLER.dogru, dil);
     state.puan++;
@@ -544,6 +545,19 @@ try {
 if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
   navigator.serviceWorker.register("sw.js").catch(() => {});
 }
+
+// 🔊 AXIOX ses sistemi (kodla üretilir, dosya yok)
+const SES={acik:true,ctx:null};
+try{SES.acik=localStorage.getItem("ax_ses")!=="0";}catch(e){}
+function sesCtx(){if(!SES.ctx){try{SES.ctx=new (window.AudioContext||window.webkitAudioContext)();}catch(e){return null;}}if(SES.ctx.state==="suspended")SES.ctx.resume();return SES.ctx;}
+function ton(f,bas,sure,tip,vol){if(!SES.acik)return;const c=sesCtx();if(!c)return;const t=c.currentTime+(bas||0),o=c.createOscillator(),g=c.createGain();o.type=tip||"sine";o.frequency.setValueAtTime(f,t);g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(vol||0.12,t+0.01);g.gain.exponentialRampToValueAtTime(0.0001,t+sure);o.connect(g).connect(c.destination);o.start(t);o.stop(t+sure+0.02);}
+const sesTik=()=>ton(880,0,0.05,"square",0.04);
+const sesDogru=()=>{ton(659,0,0.12,"triangle",0.14);ton(988,0.09,0.18,"triangle",0.14);};
+const sesYanlis=()=>{ton(220,0,0.18,"sawtooth",0.08);ton(165,0.12,0.25,"sawtooth",0.08);};
+const sesBitti=()=>{[523,659,784,1047].forEach((f,i)=>ton(f,i*0.12,0.25,"triangle",0.12));};
+document.addEventListener("click",e=>{if(e.target.closest("button")&&!e.target.closest("#sesBtn"))sesTik();},true);
+(function(){const b=document.createElement("button");b.id="sesBtn";b.title="Ses";b.style.cssText="position:fixed;left:10px;bottom:10px;z-index:9999;width:42px;height:42px;border-radius:50%;border:2px solid #e10a17;background:#141414;color:#fff;font-size:18px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.5)";
+ const yaz=()=>{b.textContent=SES.acik?"🔊":"🔇";};yaz();b.onclick=()=>{SES.acik=!SES.acik;try{localStorage.setItem("ax_ses",SES.acik?"1":"0");}catch(e){}yaz();if(SES.acik)sesDogru();};document.body.appendChild(b);})();
 
 render();
 
