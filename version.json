@@ -1,7 +1,7 @@
 {
-  "latest": "1.2.1",
+  "latest": "1.3",
   "notes": {
-    "tr": "🔊 AXIOX Arena 1.2.1 · Sesler geldi: doğru/yanlış/oyun sonu ve düğme sesleri (sol alttaki 🔊 ile aç/kapat) · 🎨 Yeni uygulama ikonu",
-    "en": "🔊 AXIOX Arena 1.2.1 · Sound effects: correct/wrong/game over and button clicks (toggle with 🔊 bottom-left) · 🎨 New app icon"
+    "tr": "🎨 AXIOX Arena 1.3 · Yeni arayüz: kartlı sınav/konu seçimi (ders simgeleri), büyük soru paneli, şık şıklar · ☰ Oyun içi menü: Ana Menü, Sınav seç, Ses, Hakkında & Lisans · 🔊 Ses efektleri · 🎨 Yeni ikon",
+    "en": "🎨 AXIOX Arena 1.3 · New UI: card-based exam/subject pick, big question panel · ☰ In-game menu with About & License · 🔊 Sound effects · 🎨 New icon"
   }
 }
