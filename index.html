@@ -155,41 +155,41 @@ const METINLER = {
 
 // ---- SinavYapisi.kt karşılığı ----
 const ULKELER = [
-  { kod: "tr", gorunenAd: "Türkiye", sinavAdi: "TYT-AYT (YKS)", dil: DILLER.TR },
-  { kod: "ru", gorunenAd: "Rusya", sinavAdi: "ЕГЭ", dil: DILLER.RU },
-  { kod: "ua", gorunenAd: "Ukrayna", sinavAdi: "НМТ", dil: DILLER.UK },
-  { kod: "ge", gorunenAd: "Gürcistan", sinavAdi: "ერთიანი ეროვნული გამოცდები", dil: DILLER.KA }
+  { kod: "tr", gorunenAd: "Türkiye", sinavAdi: "TYT-AYT (YKS)", sinavHK: "大學入學考試 TYT-AYT (YKS)", dil: DILLER.TR },
+  { kod: "ru", gorunenAd: "Rusya", sinavAdi: "ЕГЭ", sinavHK: "國家統一考試 (ЕГЭ)", dil: DILLER.RU },
+  { kod: "ua", gorunenAd: "Ukrayna", sinavAdi: "НМТ", sinavHK: "國家多科目測試 (НМТ)", dil: DILLER.UK },
+  { kod: "ge", gorunenAd: "Gürcistan", sinavAdi: "ერთიანი ეროვნული გამოცდები", sinavHK: "全國統一考試", dil: DILLER.KA }
 ];
 
 const KONULAR = {
   tr: [
-    { id: "tyt_matematik", ad: metin("TYT Matematik", "Математика TYT (Турция)", "Математика TYT (Туреччина)", "მათემატიკა TYT (თურქეთი)"), zorunlu: true, calisir: true },
-    { id: "tyt_turkce", ad: metin("TYT Türkçe", "", "", ""), zorunlu: true, calisir: true },
-    { id: "ayt_matematik", ad: metin("AYT Matematik (11-12. sınıf)", "", "", ""), zorunlu: false, calisir: true },
-    { id: "ayt_fizik", ad: metin("AYT Fizik (Vektörler, Elektrik-Manyetizma, Modern Fizik)", "", "", ""), zorunlu: false, calisir: true },
-    { id: "ayt_kimya", ad: metin("AYT Kimya (Atom Teorisi, Gazlar, Organik Kimya)", "", "", ""), zorunlu: false, calisir: true },
-    { id: "ayt_biyoloji", ad: metin("AYT Biyoloji (Hücresel Solunum, Genetik, Bitki Biyolojisi)", "", "", ""), zorunlu: false, calisir: true }
+    { id: "tyt_matematik", ad: metin("TYT Matematik", "Математика TYT (Турция)", "Математика TYT (Туреччина)", "მათემატიკა TYT (თურქეთი)", "TYT 數學"), zorunlu: true, calisir: true },
+    { id: "tyt_turkce", ad: metin("TYT Türkçe", "", "", "", "TYT 土耳其語"), zorunlu: true, calisir: true },
+    { id: "ayt_matematik", ad: metin("AYT Matematik (11-12. sınıf)", "", "", "", "AYT 數學（11–12 年級）"), zorunlu: false, calisir: true },
+    { id: "ayt_fizik", ad: metin("AYT Fizik (Vektörler, Elektrik-Manyetizma, Modern Fizik)", "", "", "", "AYT 物理（向量、電磁學、近代物理）"), zorunlu: false, calisir: true },
+    { id: "ayt_kimya", ad: metin("AYT Kimya (Atom Teorisi, Gazlar, Organik Kimya)", "", "", "", "AYT 化學（原子理論、氣體、有機化學）"), zorunlu: false, calisir: true },
+    { id: "ayt_biyoloji", ad: metin("AYT Biyoloji (Hücresel Solunum, Genetik, Bitki Biyolojisi)", "", "", "", "AYT 生物（細胞呼吸、遺傳學、植物生物學）"), zorunlu: false, calisir: true }
   ],
   ru: [
-    { id: "ege_matematik", ad: metin("", "Математика (база/профиль)", "", ""), zorunlu: true, calisir: true },
-    { id: "ege_rusca", ad: metin("", "Русский язык", "", ""), zorunlu: true, calisir: true },
-    { id: "ege_fizik", ad: metin("", "Физика", "", ""), zorunlu: false, calisir: true },
-    { id: "ege_kimya", ad: metin("", "Химия", "", ""), zorunlu: false, calisir: true },
-    { id: "ege_biyoloji", ad: metin("", "Биология", "", ""), zorunlu: false, calisir: true },
-    { id: "ege_tarih", ad: metin("", "История", "", ""), zorunlu: false, calisir: true }
+    { id: "ege_matematik", ad: metin("", "Математика (база/профиль)", "", "", "數學（基礎／專業）"), zorunlu: true, calisir: true },
+    { id: "ege_rusca", ad: metin("", "Русский язык", "", "", "俄語"), zorunlu: true, calisir: true },
+    { id: "ege_fizik", ad: metin("", "Физика", "", "", "物理"), zorunlu: false, calisir: true },
+    { id: "ege_kimya", ad: metin("", "Химия", "", "", "化學"), zorunlu: false, calisir: true },
+    { id: "ege_biyoloji", ad: metin("", "Биология", "", "", "生物"), zorunlu: false, calisir: true },
+    { id: "ege_tarih", ad: metin("", "История", "", "", "歷史"), zorunlu: false, calisir: true }
   ],
   ua: [
-    { id: "nmt_matematik", ad: metin("", "", "Математика", ""), zorunlu: true, calisir: true },
-    { id: "nmt_ukraynaca", ad: metin("", "", "Українська мова", ""), zorunlu: true, calisir: true },
-    { id: "nmt_tarih", ad: metin("", "", "Історія України", ""), zorunlu: true, calisir: true },
-    { id: "nmt_fizik", ad: metin("", "", "Фізика (seçmeli)", ""), zorunlu: false, calisir: true },
-    { id: "nmt_biyoloji", ad: metin("", "", "Біологія (seçmeli)", ""), zorunlu: false, calisir: true }
+    { id: "nmt_matematik", ad: metin("", "", "Математика", "", "數學"), zorunlu: true, calisir: true },
+    { id: "nmt_ukraynaca", ad: metin("", "", "Українська мова", "", "烏克蘭語"), zorunlu: true, calisir: true },
+    { id: "nmt_tarih", ad: metin("", "", "Історія України", "", "烏克蘭歷史"), zorunlu: true, calisir: true },
+    { id: "nmt_fizik", ad: metin("", "", "Фізика (за вибором)", "", "物理（選修）"), zorunlu: false, calisir: true },
+    { id: "nmt_biyoloji", ad: metin("", "", "Біологія (за вибором)", "", "生物（選修）"), zorunlu: false, calisir: true }
   ],
   ge: [
-    { id: "naec_gurcuce", ad: metin("", "", "", "ქართული ენა და ლიტერატურა"), zorunlu: true, calisir: true },
-    { id: "naec_matematik", ad: metin("", "", "", "მათემატიკა"), zorunlu: false, calisir: true },
-    { id: "naec_fizik", ad: metin("", "", "", "ფიზიკა (არჩევითი)"), zorunlu: false, calisir: true },
-    { id: "naec_tarih", ad: metin("", "", "", "ისტორია (არჩევითი)"), zorunlu: false, calisir: true }
+    { id: "naec_gurcuce", ad: metin("", "", "", "ქართული ენა და ლიტერატურა", "格魯吉亞語文及文學"), zorunlu: true, calisir: true },
+    { id: "naec_matematik", ad: metin("", "", "", "მათემატიკა", "數學"), zorunlu: false, calisir: true },
+    { id: "naec_fizik", ad: metin("", "", "", "ფიზიკა (არჩევითი)", "物理（選修）"), zorunlu: false, calisir: true },
+    { id: "naec_tarih", ad: metin("", "", "", "ისტორია (არჩევითი)", "歷史（選修）"), zorunlu: false, calisir: true }
   ]
 };
 
@@ -215,7 +215,7 @@ function ileriMatematikSorusuUret() {
 }
 
 function soruUret(konuId) {
-  const fen = fenSoruUret(konuId, state.aktifDil);
+  const fen = fenSoruUret(konuId, state.aktifDil === "hk" && state.secilenUlke ? state.secilenUlke.dil : state.aktifDil);
   if (fen) return fen;
   return konuId.includes("ayt_matematik") ? ileriMatematikSorusuUret() : temelMatematikSorusuUret();
 }
@@ -396,10 +396,10 @@ function renderUlkeSec() {
   ULKELER.forEach(ulke => {
     const btn = document.createElement("button");
     btn.className = "card";
-    btn.innerHTML = `<span class="ux">${({TR:"🎓",RU:"📘",UA:"📗",GE:"📙"})[ulke.kod]||"🎓"}</span><div><div class="ad">${state.aktifDil==="hk"?(ULKE_AD_HK[ulke.kod]||ulke.gorunenAd):ulke.gorunenAd}</div><div class="sinav">${ulke.sinavAdi}</div></div><span class="ok">›</span>`;
+    btn.innerHTML = `<span class="ux">${({TR:"🎓",RU:"📘",UA:"📗",GE:"📙"})[ulke.kod]||"🎓"}</span><div><div class="ad">${state.aktifDil==="hk"?(ULKE_AD_HK[ulke.kod]||ulke.gorunenAd):ulke.gorunenAd}</div><div class="sinav">${state.aktifDil==="hk"?(ulke.sinavHK||ulke.sinavAdi):ulke.sinavAdi}</div></div><span class="ok">›</span>`;
     btn.onclick = () => {
       state.secilenUlke = ulke;
-      state.aktifDil = ulke.dil;
+      if (state.aktifDil !== "hk") state.aktifDil = ulke.dil;
       state.ekran = "konu_sec";
       render();
     };
@@ -417,8 +417,8 @@ function renderKonuSec() {
   const ulke = state.secilenUlke;
   const konular = KONULAR[ulke.kod];
   app.innerHTML = `
-    <h1 style="font-size:22px">${ulke.gorunenAd}</h1>
-    <div class="subtitle">${ulke.sinavAdi}</div>
+    <h1 style="font-size:22px">${state.aktifDil==="hk"?(ULKE_AD_HK[ulke.kod]||ulke.gorunenAd):ulke.gorunenAd}</h1>
+    <div class="subtitle">${state.aktifDil==="hk"?(ulke.sinavHK||ulke.sinavAdi):ulke.sinavAdi}</div>
     <div class="list" id="konu-list"></div>
   `;
   const list = document.getElementById("konu-list");
@@ -603,7 +603,7 @@ function axSureYaz(){const e=document.getElementById('axSure');if(e){e.textConte
 function axSureKontrol(){const q=state.ekran==='quiz'&&state.secilenKonu&&state.secilenKonu.calisir&&!state.oyunBitti;
  axMuzikBasla();
  if(!q){axSureDur();return;}
- if(AXS.soru!==state.soru){AXS.soru=state.soru;AXS.kalan=AX_SURE;clearInterval(AXS.iv);AXS.iv=setInterval(()=>{AXS.kalan--;axSureYaz();if(AXS.kalan<=0){axSureDur();const c=state.soru.cevap;cevapKontrol(false);state.mesaj='⏰ '+({tr:'Süre doldu!',ru:'Время вышло!',uk:'Час вийшов!',ka:'დრო ამოიწურა!'}[state.aktifDil]||'Süre doldu!')+' ('+c+')';render();}},1000);}
+ if(AXS.soru!==state.soru){AXS.soru=state.soru;AXS.kalan=AX_SURE;clearInterval(AXS.iv);AXS.iv=setInterval(()=>{AXS.kalan--;axSureYaz();if(AXS.kalan<=0){axSureDur();const c=state.soru.cevap;cevapKontrol(false);state.mesaj='⏰ '+({tr:'Süre doldu!',ru:'Время вышло!',uk:'Час вийшов!',ka:'დრო ამოიწურა!',hk:'時間到！'}[state.aktifDil]||'Süre doldu!')+' ('+c+')';render();}},1000);}
  axSureYaz();}
 const _axRender=render;render=function(){_axRender();try{axSureKontrol();}catch(e){}};
 document.addEventListener('visibilitychange',()=>{if(document.hidden)axMuzikDur();else axMuzikBasla();});
